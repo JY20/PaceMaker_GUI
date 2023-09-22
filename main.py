@@ -47,7 +47,8 @@ def getWindowByState():
     sizeText = 10
     layoutLogin = [[sg.Text(infoMessage), sg.Text()],
                    [sg.Text('Name', size=(sizeText, 1)), sg.InputText()],
-                   [sg.Text('Password', size=(sizeText, 1)), sg.InputText()],
+                   [sg.Text('Password', size=(sizeText, 1)),
+                    sg.InputText(password_char='*')],
                    [sg.Text('', size=(sizeText, 1)), sg.Text()],
                    [sg.Button('Login'), sg.Button('Create New User')]]
 
@@ -55,13 +56,18 @@ def getWindowByState():
     layoutCreateUser = [
         [sg.Text(infoMessage), sg.Text()],
         [sg.Text('Name', size=(sizeText, 1)), sg.InputText()],
-        [sg.Text('Password', size=(sizeText, 1)), sg.InputText()],
-        [sg.Text('Confirm Password', size=(sizeText, 1)), sg.InputText()],
+        [sg.Text('Password', size=(sizeText, 1)),
+         sg.InputText(password_char='*')],
+        [sg.Text('Confirm Password', size=(sizeText, 1)),
+         sg.InputText(password_char='*')],
         [sg.Text('', size=(sizeText, 1)), sg.Text()],
         [sg.Button('Create New User')], [sg.Button('Back to Login')]]
 
     sizeText = 50
-    layoutCommon = [sg.Text("Mode"), sg.Combo(mode, size=(sizeText, 1))]
+    layoutCommon = [
+        [sg.Text(infoMessage, size=(sizeText, 3)), sg.Text()],
+        [sg.Text("Mode"), sg.Combo(mode, size=(sizeText, 1))]
+    ]
     layoutA = []
     layoutV = []
     layoutIR = []
@@ -114,12 +120,13 @@ if __name__ == '__main__':
             if (event == "Login"):
                 if (logging):
                     print(values)
-                if (users[getRealValue(values[0])].checkCredential(getRealValue(values[0]), getRealValue(values[1]))):
+                if (users.get(getRealValue(values[0])) and users[getRealValue(values[0])].checkCredential(getRealValue(values[0]), getRealValue(values[1]))):
                     infoMessage = ""
                     state = "control"
                     curUser = getRealValue(values[0])
+                    infoMessage = "Welcome to Control Panel for: " + curUser
                 else:
-                    infoMessage = "Password Incorrect"
+                    infoMessage = "Password Incorrect or this user does not exist"
             elif (event == "Create New User"):
                 infoMessage = ""
                 state = "createUser"

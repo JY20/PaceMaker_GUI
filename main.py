@@ -1,8 +1,9 @@
 import PySimpleGUI as sg
 import csv
+import hashlib
+
 from User import User
 
-usersCredentials = {}
 users = {}
 logging = False
 state = "login"
@@ -18,7 +19,7 @@ def getRealValue(value):
 
 def createUserDB(name, password):
     f = open(dataBaseFile, "a")
-    value = name+","+password+"\n"
+    value = name+","+hashlib.sha256(password.encode('utf-8')).hexdigest()+"\n"
     f.write(value)
     if (logging):
         print("creating user: "+str(value))
@@ -33,8 +34,6 @@ def getAllUsers():
         for user in user_list:
             if (user != ""):
                 values = user.split(",")
-                # usersCredentials[getRealValue(
-                #     values[0])] = getRealValue(values[1])
                 users[getRealValue(
                     values[0])] = User(getRealValue(
                         values[0]), getRealValue(
@@ -107,9 +106,7 @@ if __name__ == '__main__':
             window.close()
             break
 
-        # windowSize = window.size
-
-        if (logging):
+        if(logging):
             print(state)
 
         if (state == "login"):

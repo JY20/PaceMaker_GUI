@@ -1,8 +1,9 @@
 import PySimpleGUI as sg
+import csv
 
 usersCredentials = {}
 logging = False
-state = "control"
+state = "login"
 infoMessage = ""
 dataBaseFile = "database.csv"
 windowSize = []
@@ -14,7 +15,7 @@ class Users:
         self.password = password
 
     def checkCredential(self, name, password):
-        if(self.name == name and self.password == password):
+        if (self.name == name and self.password == password):
             return True
         else:
             return False
@@ -28,7 +29,7 @@ def createUserDB(name, password):
     f = open(dataBaseFile, "a")
     value = name+","+password+"\n"
     f.write(value)
-    if(logging):
+    if (logging):
         print("creating user: "+str(value))
     f.close()
 
@@ -36,14 +37,14 @@ def createUserDB(name, password):
 def getAllUsers():
     f = open(dataBaseFile, "r")
     entry = f.read()
-    if(entry != ""):
+    if (entry != ""):
         user_list = entry.split("\n")
         for user in user_list:
-            if(user != ""):
+            if (user != ""):
                 values = user.split(",")
                 usersCredentials[getRealValue(
                     values[0])] = getRealValue(values[1])
-                if(logging):
+                if (logging):
                     print("user: "+str(values))
     f.close()
 
@@ -68,13 +69,13 @@ def getWindowByState():
         [sg.Text('', size=(sizeText, 1)), sg.Text()],
         [sg.Button('Create New User')], [sg.Button('Back to Login')]]
 
-    if(state == "login"):
+    if (state == "login"):
         window = sg.Window('PaceMaker', layoutLogin, resizable=True)
         return window
-    elif(state == "control"):
+    elif (state == "control"):
         window = sg.Window('PaceMaker', layoutControl, resizable=True)
         return window
-    elif(state == "createUser"):
+    elif (state == "createUser"):
         window = sg.Window('PaceMaker', layoutCreateUser, resizable=True)
         return window
 
@@ -92,36 +93,36 @@ if __name__ == '__main__':
 
         # windowSize = window.size
 
-        if(logging):
+        if (logging):
             print(state)
 
-        if(state == "login"):
+        if (state == "login"):
             getAllUsers()
-            if(event == "Login"):
-                if(logging):
+            if (event == "Login"):
+                if (logging):
                     print(values)
-                if(usersCredentials[getRealValue(values[0])] == getRealValue(values[1])):
+                if (usersCredentials[getRealValue(values[0])] == getRealValue(values[1])):
                     infoMessage = ""
                     state = "control"
                 else:
                     infoMessage = "Password Incorrect"
-            elif(event == "Create New User"):
+            elif (event == "Create New User"):
                 infoMessage = ""
                 state = "createUser"
-        elif(state == "createUser"):
-            if(event == "Create New User"):
-                if(not(getRealValue(values[1]) == getRealValue(values[2]))):
+        elif (state == "createUser"):
+            if (event == "Create New User"):
+                if (not (getRealValue(values[1]) == getRealValue(values[2]))):
                     infoMessage = "Password mismatch"
-                elif(usersCredentials.get(getRealValue(values[0]))):
+                elif (usersCredentials.get(getRealValue(values[0]))):
                     infoMessage = "User already exists"
                 else:
-                    if(logging):
+                    if (logging):
                         print("Creating New User: "+values[0])
                     infoMessage = "User successfully created"
                     createUserDB(getRealValue(
                         values[0]), getRealValue(values[1]))
                     state = "login"
-            elif(event == "Back to Login"):
+            elif (event == "Back to Login"):
                 state = "login"
         window.close()
     window.close()

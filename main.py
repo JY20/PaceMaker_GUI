@@ -21,7 +21,7 @@ def createUserDB(name, password):
     f = open(dataBaseFile, "a")
     value = name+","+hashlib.sha256(password.encode('utf-8')).hexdigest()+"\n"
     f.write(value)
-    if(logging):
+    if (logging):
         print("creating user: "+str(value))
     f.close()
 
@@ -29,16 +29,16 @@ def createUserDB(name, password):
 def getAllUsers():
     f = open(dataBaseFile, "r")
     entry = f.read()
-    if(entry != ""):
+    if (entry != ""):
         user_list = entry.split("\n")
         for user in user_list:
-            if(user != ""):
+            if (user != ""):
                 values = user.split(",")
                 users[getRealValue(
                     values[0])] = User(getRealValue(
                         values[0]), getRealValue(
                         values[1]))
-                if(logging):
+                if (logging):
                     print("user: "+str(values))
     f.close()
 
@@ -84,13 +84,13 @@ def getWindowByState():
         layoutIR
     ]
 
-    if(state == "login"):
+    if (state == "login"):
         window = sg.Window('PaceMaker', layoutLogin, resizable=True)
         return window
-    elif(state == "control"):
+    elif (state == "control"):
         window = sg.Window('PaceMaker', layoutAOOR, resizable=True)
         return window
-    elif(state == "createUser"):
+    elif (state == "createUser"):
         window = sg.Window('PaceMaker', layoutCreateUser, resizable=True)
         return window
 
@@ -109,34 +109,34 @@ if __name__ == '__main__':
         if(logging):
             print(state)
 
-        if(state == "login"):
+        if (state == "login"):
             getAllUsers()
-            if(event == "Login"):
-                if(logging):
+            if (event == "Login"):
+                if (logging):
                     print(values)
-                if(users[getRealValue(values[0])].checkCredential(getRealValue(values[0]), getRealValue(values[1]))):
+                if (users[getRealValue(values[0])].checkCredential(getRealValue(values[0]), getRealValue(values[1]))):
                     infoMessage = ""
                     state = "control"
                     curUser = getRealValue(values[0])
                 else:
                     infoMessage = "Password Incorrect"
-            elif(event == "Create New User"):
+            elif (event == "Create New User"):
                 infoMessage = ""
                 state = "createUser"
-        elif(state == "createUser"):
-            if(event == "Create New User"):
-                if(not(getRealValue(values[1]) == getRealValue(values[2]))):
+        elif (state == "createUser"):
+            if (event == "Create New User"):
+                if (not (getRealValue(values[1]) == getRealValue(values[2]))):
                     infoMessage = "Password mismatch"
-                elif(users.get(getRealValue(values[0]))):
+                elif (users.get(getRealValue(values[0]))):
                     infoMessage = "User already exists"
                 else:
-                    if(logging):
+                    if (logging):
                         print("Creating New User: "+values[0])
                     infoMessage = "User successfully created"
                     createUserDB(getRealValue(
                         values[0]), getRealValue(values[1]))
                     state = "login"
-            elif(event == "Back to Login"):
+            elif (event == "Back to Login"):
                 state = "login"
         window.close()
     window.close()

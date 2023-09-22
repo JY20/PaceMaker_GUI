@@ -66,7 +66,9 @@ def getWindowByState():
     sizeText = 50
     layoutCommon = [
         [sg.Text(infoMessage, size=(sizeText, 3)), sg.Text()],
-        [sg.Text("Mode"), sg.Combo(mode, size=(sizeText, 1))]
+        [sg.Text("Mode"), sg.Combo(mode, size=(sizeText, 1))],
+        [sg.Text('', size=(sizeText, 1)), sg.Text()],
+        [sg.Button('Log Off')]
     ]
     layoutA = []
     layoutV = []
@@ -145,5 +147,11 @@ if __name__ == '__main__':
                     state = "login"
             elif (event == "Back to Login"):
                 state = "login"
+        elif (state == "control"):
+            if(logging):
+                print(event)
+            if(event == "Log Off"):
+                state = "login"
+                infoMessage = "Successful log off"
         window.close()
     window.close()

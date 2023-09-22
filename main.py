@@ -97,7 +97,7 @@ def getWindowByState():
 
 if __name__ == '__main__':
     sg.theme('LightGrey1')
-
+    sss
     while True:
         window = getWindowByState()
 

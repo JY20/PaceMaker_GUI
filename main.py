@@ -5,7 +5,7 @@ import hashlib
 from User import User
 
 users = {}
-logging = False
+logging = True
 state = "login"
 mode = ["AOOR", "AAIR", "VOOR", "VVIR"]
 infoMessage = ""
@@ -64,39 +64,96 @@ def getWindowByState():
         [sg.Button('Create New User')], [sg.Button('Back to Login')]]
 
     sizeText = 50
-    layoutCommon = [
+    layoutHeader = [
         [sg.Text(infoMessage, size=(sizeText, 3)), sg.Text()],
-        [sg.Text("Mode"), sg.Combo(mode, size=(sizeText, 1))],
+        [sg.Text("Mode"), sg.Combo(mode, size=(
+            sizeText, 1), enable_events=True)],
         [sg.Text('', size=(sizeText, 1)), sg.Text()],
-        [sg.Button('Log Off')]
     ]
-    layoutA = []
-    layoutV = []
-    layoutIR = []
+
+    sizeText = 20
+    layoutCommonParameters = [
+        [sg.Text('Lower Rate Limit', size=(sizeText, 1)), sg.InputText()],
+        [sg.Text('Upper Rate Limit', size=(sizeText, 1)), sg.InputText()],
+        [sg.Text('Maximum Sensor Rate', size=(sizeText, 1)), sg.InputText()],
+        [sg.Text('Activity Threshold', size=(sizeText, 1)), sg.InputText()],
+        [sg.Text('Reaction Time', size=(sizeText, 1)), sg.InputText()],
+        [sg.Text('Response Factor', size=(sizeText, 1)), sg.InputText()],
+        [sg.Text('Recovery Time', size=(sizeText, 1)), sg.InputText()],
+    ]
+    layoutA = [
+        [sg.Text('Atrial Amplitude', size=(sizeText, 1)), sg.InputText()],
+        [sg.Text('Atrial Pulse Width', size=(sizeText, 1)), sg.InputText()],
+    ]
+    layoutV = [
+        [sg.Text('Ventricular Amplitude', size=(sizeText, 1)), sg.InputText()],
+        [sg.Text('Ventricular Pulse Width', size=(sizeText, 1)), sg.InputText()],
+    ]
+    layoutAIR = [
+        [sg.Text('Atrial Sensitivity', size=(sizeText, 1)), sg.InputText()],
+        [sg.Text('ARP', size=(sizeText, 1)), sg.InputText()],
+        [sg.Text('PVARP', size=(sizeText, 1)), sg.InputText()],
+        [sg.Text('Hysteresis', size=(sizeText, 1)), sg.InputText()],
+        [sg.Text('Rate Smoothing', size=(sizeText, 1)), sg.InputText()],
+    ]
+    layoutVIR = [
+        [sg.Text('Ventricular Sensitivity', size=(sizeText, 1)), sg.InputText()],
+        [sg.Text('VRP', size=(sizeText, 1)), sg.InputText()],
+        [sg.Text('Hysteresis', size=(sizeText, 1)), sg.InputText()],
+        [sg.Text('Rate Smoothing', size=(sizeText, 1)), sg.InputText()],
+    ]
+    layoutSubmit = [
+        sg.Button('Submit Parameters')
+    ]
+    layoutLogOff = [
+        sg.Button('Log Off')
+    ]
+    layoutCommon = [layoutHeader, layoutLogOff]
     layoutAOOR = [
-        layoutCommon,
-        layoutA
+        layoutHeader,
+        layoutCommonParameters,
+        layoutA,
+        layoutSubmit,
+        layoutLogOff
     ]
     layoutAAIR = [
-        layoutCommon,
+        layoutHeader,
+        layoutCommonParameters,
         layoutA,
-        layoutIR
+        layoutAIR,
+        layoutSubmit,
+        layoutLogOff
     ]
     layoutVOOR = [
-        layoutCommon,
-        layoutV
-    ]
-    layoutVIIR = [
-        layoutCommon,
+        layoutHeader,
+        layoutCommonParameters,
         layoutV,
-        layoutIR
+        layoutSubmit,
+        layoutLogOff
+    ]
+    layoutVVIR = [
+        layoutHeader,
+        layoutCommonParameters,
+        layoutV,
+        layoutVIR,
+        layoutSubmit,
+        layoutLogOff
     ]
 
     if (state == "login"):
         window = sg.Window('PaceMaker', layoutLogin, resizable=True)
         return window
     elif (state == "control"):
-        window = sg.Window('PaceMaker', layoutAOOR, resizable=True)
+        if (event == 0):
+            window = sg.Window('PaceMaker', layoutAOOR, resizable=True)
+        elif (event == 1):
+            window = sg.Window('PaceMaker', layoutAAIR, resizable=True)
+        elif (event == 2):
+            window = sg.Window('PaceMaker', layoutVOOR, resizable=True)
+        elif (event == 3):
+            window = sg.Window('PaceMaker', layoutVVIR, resizable=True)
+        else:
+            window = sg.Window('PaceMaker', layoutCommon, resizable=True)
         return window
     elif (state == "createUser"):
         window = sg.Window('PaceMaker', layoutCreateUser, resizable=True)
@@ -114,7 +171,7 @@ if __name__ == '__main__':
             window.close()
             break
 
-        if(logging):
+        if (logging):
             print(state)
 
         if (state == "login"):
@@ -148,9 +205,11 @@ if __name__ == '__main__':
             elif (event == "Back to Login"):
                 state = "login"
         elif (state == "control"):
-            if(logging):
+            if (logging):
                 print(event)
-            if(event == "Log Off"):
+            if (event == "Submit Parameters"):
+                print(values)
+            if (event == "Log Off"):
                 state = "login"
                 infoMessage = "Successful log off"
         window.close()

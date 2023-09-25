@@ -63,15 +63,17 @@ def getWindowByState():
         [sg.Text('', size=(sizeText, 1)), sg.Text()],
         [sg.Button('Create New User')], [sg.Button('Back to Login')]]
 
-    sizeText = 50
+    sizeText = 20
+
     layoutHeader = [
-        [sg.Text(infoMessage, size=(sizeText, 3)), sg.Text()],
-        [sg.Text("Mode"), sg.Combo(mode, size=(
+        [sg.Text(infoMessage, size=(50, 3)), sg.Text()],
+        [sg.Text("Mode", size=(sizeText, 1)), sg.Combo(mode, size=(
             sizeText, 1), enable_events=True)],
         [sg.Text('', size=(sizeText, 1)), sg.Text()],
     ]
 
     sizeText = 20
+
     layoutCommonParameters = [
         [sg.Text('Lower Rate Limit', size=(sizeText, 1)), sg.InputText()],
         [sg.Text('Upper Rate Limit', size=(sizeText, 1)), sg.InputText()],

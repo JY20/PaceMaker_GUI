@@ -35,7 +35,7 @@ def getRealValue(value):
 def createUserDB(name, password):
     f = open(dataBaseFile, "a")
     value = name+","+hashlib.sha256(password.encode('utf-8')).hexdigest()
-    for i in range(len(parameters)):
+    for i in range(len(parameterNames)):
         value += ", "
     value = value+"\n"
     f.write(value)
@@ -138,23 +138,29 @@ def getWindowByState():
     ]
 
     sizeText = 20
-    yrs = [i for i in range(2000, 2025)]
+    LowerRateLimitRange = [i for i in range(30, 50, 5)] + [i for i in range(50, 90)] + [i for i in range(90, 176, 5)]
+    UpperRateLimitRange = [i for i in range(50, 176, 5)]
+    MaxSensorRateRange = [i for i in range(50, 176, 5)]
+    ActivityThresholdRange = ['V-Low', 'Low', 'Med-Low', 'Med', 'Med-High', 'High', 'V-High']
+    ReactionTimeRange = [i for i in range(10, 51, 10)]
+    ResponseFactorRange = [i for i in range(1,17)]
+    RecoveryTimeRange = [i for i in range(2,17)]
 
     layoutCommonParameters = [
         [sg.Text('Lower Rate Limit', size=(sizeText, 1)),
-         sg.Spin(values=1, readonly=False,  size=sizeText)],
+         sg.Spin(LowerRateLimitRange, initial_value = 60, readonly = True,  size = sizeText)],
         [sg.Text('Upper Rate Limit', size=(sizeText, 1)),
-         sg.Spin(values=1, readonly=False,  size=sizeText)],
+         sg.Spin(UpperRateLimitRange, initial_value = 120, readonly = True,  size = sizeText)],
         [sg.Text('Maximum Sensor Rate', size=(sizeText, 1)),
-         sg.Spin(values=1, readonly=False,  size=sizeText)],
+         sg.Spin(MaxSensorRateRange, initial_value = 120, readonly = True,  size = sizeText)],
         [sg.Text('Activity Threshold', size=(sizeText, 1)),
-         sg.Spin(values=1, readonly=False,  size=sizeText)],
+         sg.Spin(ActivityThresholdRange, initial_value = 'Med', readonly = True,  size = sizeText)],
         [sg.Text('Reaction Time', size=(sizeText, 1)),
-         sg.Spin(values=1, readonly=False,  size=sizeText)],
+         sg.Spin(ReactionTimeRange, initial_value = 30, readonly = True,  size = sizeText)],
         [sg.Text('Response Factor', size=(sizeText, 1)),
-         sg.Spin(values=1, readonly=False,  size=sizeText)],
+         sg.Spin(ResponseFactorRange, initial_value = 8, readonly = True,  size = sizeText)],
         [sg.Text('Recovery Time', size=(sizeText, 1)),
-         sg.Spin(values=1, readonly=False,  size=sizeText)],
+         sg.Spin(RecoveryTimeRange, initial_value = 5, readonly = True,  size = sizeText)],
     ]
     layoutA = [
         [sg.Text('Atrial Amplitude', size=(sizeText, 1)),

@@ -1,5 +1,5 @@
 import PySimpleGUI as sg
-import csv
+import json
 import hashlib
 
 from User import User
@@ -11,7 +11,7 @@ mode = ["AOOR", "AAIR", "VOOR", "VVIR"]
 curMode = ""
 windowMode = "none"
 infoMessage = ""
-dataBaseFile = "database.csv"
+dataBaseFile = "database.json"
 curUser = ""
 parameterNames = ['Lower Rate Limit', 'Upper Rate Limit', 'Maximum Sensor Rate', 'Activity Threshold', 'Reaction Time', 'Response Factor', 'Recovery Time',
                   'Atrial Amplitude', 'Atrial Pulse Width', 'Ventricular Amplitude', 'Ventricular Pulse Width',
@@ -33,48 +33,38 @@ def getRealValue(value):
 
 
 def createUserDB(name, password):
-    f = open(dataBaseFile, "a")
-    value = name+","+hashlib.sha256(password.encode('utf-8')).hexdigest()
-    for i in range(len(parameterNames)):
-        value += ",0"
-    value = value+"\n"
-    f.write(value)
+    value = {}
+    value["name"] = name
+    value["password"] = hashlib.sha256(password.encode('utf-8')).hexdigest()
+    valueParameters = {}
+    for parameter in parameterNames:
+        valueParameters[parameter] = 0
+    value["parameters"] = valueParameters
+    users[name] = User(value["name"], value["password"], valueParameters)
     if (logging):
         print("creating user: "+str(value))
-    f.close()
+    updateDatabase()
+
+
+def getAllUsersCurrentJson():
+    value = {}
+    for user in users:
+        value[user] = users[user].getJson()
+    return value
 
 
 def getAllUsers():
     f = open(dataBaseFile, "r")
-    entry = f.read()
-    if (entry != ""):
-        user_list = entry.split("\n")
-        for user in user_list:
-            if (user != ""):
-                values = user.split(",")
-                user_parameters = {}
-                for i in range(len(parameterNames)):
-                    user_parameters[parameterNames[i]
-                                    ] = convertStrToInt(getRealValue(values[i+2]))
-                users[getRealValue(
-                    values[0])] = User(getRealValue(
-                        values[0]), getRealValue(
-                        values[1]), user_parameters)
-                if (logging):
-                    print("user: "+str(values))
-                    print("user: "+str(user_parameters))
+    data = json.load(f)
+    for user in data:
+        users[user] = User(data[user]['name'], data[user]
+                           ['password'], data[user]['parameters'])
     f.close()
 
 
 def updateDatabase():
     f = open(dataBaseFile, "w")
-    value = ""
-    for user in users:
-        value += users[user].valuesToStr()
-    f.write(value)
-    if (logging):
-        print("updating database...\n")
-        print(value)
+    f.write(json.dumps(getAllUsersCurrentJson(), indent=3))
     f.close()
 
 

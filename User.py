@@ -13,5 +13,20 @@ class User:
         else:
             return False
 
+    def getParameters(self):
+        return self.parameters.copy()
+
     def updateParameters(self, newParameters):
-        return None
+        for parameter in newParameters:
+            self.parameters[parameter] = newParameters[parameter]
+
+    def valuesToStr(self):
+        parameterNames = ['Lower Rate Limit', 'Upper Rate Limit', 'Maximum Sensor Rate', 'Activity Threshold', 'Reaction Time', 'Response Factor', 'Recovery Time',
+                          'Atrial Amplitude', 'Atrial Pulse Width', 'Ventricular Amplitude', 'Ventricular Pulse Width',
+                          'Atrial Sensitivity', 'ARP', 'PVARP', 'Ventricular Sensitivity', 'VRP',
+                          'Hysteresis', 'Rate Smoothing']
+        strValue = self.name+"," + self.password
+        for parameter in parameterNames:
+            strValue += ","+str(self.parameters[parameter])
+        strValue = strValue+"\n"
+        return strValue

@@ -155,15 +155,15 @@ def getWindowByState():
                                'Atrial Sensitivity': 300, 'ARP': 300, 'PVARP': 300, 'Ventricular Sensitivity': 300, 'VRP': 500,
                                'Hysteresis': 300, 'Rate Smoothing': 300}
 
-        parameterIncrements = {'Lower Rate Limit': 200, 'Upper Rate Limit': 200, 'Maximum Sensor Rate': 200, 'Activity Threshold': 200, 'Reaction Time': 200, 'Response Factor': 200, 'Recovery Time': 200,
-                               'Atrial Amplitude':  500, 'Atrial Pulse Width': 300, 'Ventricular Amplitude': 500, 'Ventricular Pulse Width': 300,
-                               'Atrial Sensitivity': 300, 'ARP': 300, 'PVARP': 300, 'Ventricular Sensitivity': 300, 'VRP': 500,
-                               'Hysteresis': 300, 'Rate Smoothing': 300}
+        parameterIncrements = {'Lower Rate Limit': 2, 'Upper Rate Limit': 2, 'Maximum Sensor Rate': 2, 'Activity Threshold': 2, 'Reaction Time': 2, 'Response Factor': 2, 'Recovery Time': 2,
+                               'Atrial Amplitude':  2, 'Atrial Pulse Width': 3, 'Ventricular Amplitude': 5, 'Ventricular Pulse Width': 3,
+                               'Atrial Sensitivity': 2, 'ARP': 3, 'PVARP': 3, 'Ventricular Sensitivity': 3, 'VRP': 5,
+                               'Hysteresis': 2, 'Rate Smoothing': 3}
 
         parameterValues = {}
         for parameter in parameterNames:
             parameterValues[parameter] = [i for i in range(
-                parameterLowerLimit[parameter], parameterUpperLimit[parameter])]
+                parameterLowerLimit[parameter], parameterUpperLimit[parameter], parameterIncrements[parameter])]
 
         layoutCommonParameters = [
             [sg.Text('Lower Rate Limit', size=(sizeText, 1)),
@@ -261,16 +261,12 @@ def getWindowByState():
             print(event)
         if (windowMode == "AOOR"):
             window = sg.Window('PaceMaker', layoutAOOR, resizable=True)
-            curMode = "AOOR"
         elif (windowMode == "AAIR"):
             window = sg.Window('PaceMaker', layoutAAIR, resizable=True)
-            curMode = "AAIR"
         elif (windowMode == "VOOR"):
             window = sg.Window('PaceMaker', layoutVOOR, resizable=True)
-            curMode = "VOOR"
         elif (windowMode == "VVIR"):
             window = sg.Window('PaceMaker', layoutVVIR, resizable=True)
-            curMode = "VVIR"
         else:
             window = sg.Window('PaceMaker', layoutCommon, resizable=True)
         return window
@@ -331,8 +327,6 @@ if __name__ == '__main__':
                 print(event)
                 print(values)
             if (event == "Submit Parameters"):
-                # print(curMode)
-                # print(getUpdatedParameters(values))
                 users[curUser].updateParameters(getUpdatedParameters(values))
                 infoMessage = "Parameters Successfully Updated!"
                 updateDatabase()

@@ -1,5 +1,5 @@
 import PySimpleGUI as sg
-import csv
+import json
 import hashlib
 
 from User import User
@@ -11,7 +11,7 @@ mode = ["AOOR", "AAIR", "VOOR", "VVIR"]
 curMode = ""
 windowMode = "none"
 infoMessage = ""
-dataBaseFile = "database.csv"
+dataBaseFile = "database.json"
 curUser = ""
 parameterNames = ['Lower Rate Limit', 'Upper Rate Limit', 'Maximum Sensor Rate', 'Activity Threshold', 'Reaction Time', 'Response Factor', 'Recovery Time',
                   'Atrial Amplitude', 'Atrial Pulse Width', 'Ventricular Amplitude', 'Ventricular Pulse Width',
@@ -33,48 +33,38 @@ def getRealValue(value):
 
 
 def createUserDB(name, password):
-    f = open(dataBaseFile, "a")
-    value = name+","+hashlib.sha256(password.encode('utf-8')).hexdigest()
-    for i in range(len(parameterNames)):
-        value += ",0"
-    value = value+"\n"
-    f.write(value)
+    value = {}
+    value["name"] = name
+    value["password"] = hashlib.sha256(password.encode('utf-8')).hexdigest()
+    valueParameters = {}
+    for parameter in parameterNames:
+        valueParameters[parameter] = 0
+    value["parameters"] = valueParameters
+    users[name] = User(value["name"], value["password"], valueParameters)
     if (logging):
         print("creating user: "+str(value))
-    f.close()
+    updateDatabase()
+
+
+def getAllUsersCurrentJson():
+    value = {}
+    for user in users:
+        value[user] = users[user].getJson()
+    return value
 
 
 def getAllUsers():
     f = open(dataBaseFile, "r")
-    entry = f.read()
-    if (entry != ""):
-        user_list = entry.split("\n")
-        for user in user_list:
-            if (user != ""):
-                values = user.split(",")
-                user_parameters = {}
-                for i in range(len(parameterNames)):
-                    user_parameters[parameterNames[i]
-                                    ] = convertStrToInt(getRealValue(values[i+2]))
-                users[getRealValue(
-                    values[0])] = User(getRealValue(
-                        values[0]), getRealValue(
-                        values[1]), user_parameters)
-                if (logging):
-                    print("user: "+str(values))
-                    print("user: "+str(user_parameters))
+    data = json.load(f)
+    for user in data:
+        users[user] = User(data[user]['name'], data[user]
+                           ['password'], data[user]['parameters'])
     f.close()
 
 
 def updateDatabase():
     f = open(dataBaseFile, "w")
-    value = ""
-    for user in users:
-        value += users[user].valuesToStr()
-    f.write(value)
-    if (logging):
-        print("updating database...\n")
-        print(value)
+    f.write(json.dumps(getAllUsersCurrentJson(), indent=3))
     f.close()
 
 
@@ -155,15 +145,15 @@ def getWindowByState():
                                'Atrial Sensitivity': 300, 'ARP': 300, 'PVARP': 300, 'Ventricular Sensitivity': 300, 'VRP': 500,
                                'Hysteresis': 300, 'Rate Smoothing': 300}
 
-        parameterIncrements = {'Lower Rate Limit': 200, 'Upper Rate Limit': 200, 'Maximum Sensor Rate': 200, 'Activity Threshold': 200, 'Reaction Time': 200, 'Response Factor': 200, 'Recovery Time': 200,
-                               'Atrial Amplitude':  500, 'Atrial Pulse Width': 300, 'Ventricular Amplitude': 500, 'Ventricular Pulse Width': 300,
-                               'Atrial Sensitivity': 300, 'ARP': 300, 'PVARP': 300, 'Ventricular Sensitivity': 300, 'VRP': 500,
-                               'Hysteresis': 300, 'Rate Smoothing': 300}
+        parameterIncrements = {'Lower Rate Limit': 2, 'Upper Rate Limit': 2, 'Maximum Sensor Rate': 2, 'Activity Threshold': 2, 'Reaction Time': 2, 'Response Factor': 2, 'Recovery Time': 2,
+                               'Atrial Amplitude':  2, 'Atrial Pulse Width': 3, 'Ventricular Amplitude': 5, 'Ventricular Pulse Width': 3,
+                               'Atrial Sensitivity': 2, 'ARP': 3, 'PVARP': 3, 'Ventricular Sensitivity': 3, 'VRP': 5,
+                               'Hysteresis': 2, 'Rate Smoothing': 3}
 
         parameterValues = {}
         for parameter in parameterNames:
             parameterValues[parameter] = [i for i in range(
-                parameterLowerLimit[parameter], parameterUpperLimit[parameter])]
+                parameterLowerLimit[parameter], parameterUpperLimit[parameter], parameterIncrements[parameter])]
 
         layoutCommonParameters = [
             [sg.Text('Lower Rate Limit', size=(sizeText, 1)),
@@ -261,16 +251,12 @@ def getWindowByState():
             print(event)
         if (windowMode == "AOOR"):
             window = sg.Window('PaceMaker', layoutAOOR, resizable=True)
-            curMode = "AOOR"
         elif (windowMode == "AAIR"):
             window = sg.Window('PaceMaker', layoutAAIR, resizable=True)
-            curMode = "AAIR"
         elif (windowMode == "VOOR"):
             window = sg.Window('PaceMaker', layoutVOOR, resizable=True)
-            curMode = "VOOR"
         elif (windowMode == "VVIR"):
             window = sg.Window('PaceMaker', layoutVVIR, resizable=True)
-            curMode = "VVIR"
         else:
             window = sg.Window('PaceMaker', layoutCommon, resizable=True)
         return window
@@ -331,8 +317,6 @@ if __name__ == '__main__':
                 print(event)
                 print(values)
             if (event == "Submit Parameters"):
-                # print(curMode)
-                # print(getUpdatedParameters(values))
                 users[curUser].updateParameters(getUpdatedParameters(values))
                 infoMessage = "Parameters Successfully Updated!"
                 updateDatabase()

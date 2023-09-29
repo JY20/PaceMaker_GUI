@@ -20,13 +20,19 @@ class User:
         for parameter in newParameters:
             self.parameters[parameter] = newParameters[parameter]
 
-    def valuesToStr(self):
+    def getName(self):
+        return self.name
+
+    def getJson(self):
         parameterNames = ['Lower Rate Limit', 'Upper Rate Limit', 'Maximum Sensor Rate', 'Activity Threshold', 'Reaction Time', 'Response Factor', 'Recovery Time',
                           'Atrial Amplitude', 'Atrial Pulse Width', 'Ventricular Amplitude', 'Ventricular Pulse Width',
                           'Atrial Sensitivity', 'ARP', 'PVARP', 'Ventricular Sensitivity', 'VRP',
                           'Hysteresis', 'Rate Smoothing']
-        strValue = self.name+"," + self.password
+        value = {}
+        value["name"] = self.name
+        value["password"] = self.password
+        valueParameters = {}
         for parameter in parameterNames:
-            strValue += ","+str(self.parameters[parameter])
-        strValue = strValue+"\n"
-        return strValue
+            valueParameters[parameter] = self.parameters[parameter]
+        value["parameters"] = valueParameters
+        return value

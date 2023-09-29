@@ -57,7 +57,7 @@ def getAllUsers():
                     user_parameters[parameterNames[i]
                                     ] = convertStrToInt(getRealValue(values[i+2]))
                 users[getRealValue(
-                    values[0])] = User(getRealValue(
+                        values[0])] = User(getRealValue(
                         values[0]), getRealValue(
                         values[1]), user_parameters)
                 if (logging):

@@ -54,7 +54,13 @@ def getAllUsersCurrentJson():
 
 
 def getAllUsers():
-    f = open(dataBaseFile, "r")
+    try:
+        f = open(dataBaseFile, "r")
+    except (FileNotFoundError):
+        f = open(dataBaseFile, "x")
+        f.close()
+        updateDatabase()
+        f = open(dataBaseFile, "r")
     data = json.load(f)
     for user in data:
         users[user] = User(data[user]['name'], data[user]
@@ -69,7 +75,7 @@ def updateDatabase():
 
 
 def convertStrToInt(value):
-    if(value == ""):
+    if (value == ""):
         return 0
     return int(value)
 
@@ -80,24 +86,24 @@ def getUpdatedParameters(values):
     for parameter in parameterNamesCommon:
         updated_parameters[parameter] = values[count]
         count += 1
-    if("A" in curMode):
+    if ("A" in curMode):
         for parameter in parameterNamesA:
             updated_parameters[parameter] = values[count]
             count += 1
-    if("V" in curMode):
+    if ("V" in curMode):
         for parameter in parameterNamesV:
             updated_parameters[parameter] = values[count]
             count += 1
-    if("AIR" in curMode):
+    if ("AIR" in curMode):
         for parameter in parameterNamesAIR:
             updated_parameters[parameter] = values[count]
             count += 1
-    if("VIR" in curMode):
+    if ("VIR" in curMode):
         for parameter in parameterNamesVIR:
             updated_parameters[parameter] = values[count]
             count += 1
 
-    if(logging):
+    if (logging):
         print("For user: "+str(curUser)+" updating "+str(updated_parameters))
     return updated_parameters
 
@@ -247,7 +253,7 @@ def getWindowByState():
         window = sg.Window('PaceMaker', layoutLogin, resizable=True)
         return window
     elif (state == "control"):
-        if(logging):
+        if (logging):
             print(event)
         if (windowMode == "AOOR"):
             window = sg.Window('PaceMaker', layoutAOOR, resizable=True)
@@ -311,7 +317,7 @@ if __name__ == '__main__':
                 state = "login"
         elif (state == "control"):
             windowMode = values['mode']
-            if(windowMode in mode):
+            if (windowMode in mode):
                 curMode = windowMode
             if (logging):
                 print(event)

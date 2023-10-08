@@ -2,10 +2,11 @@ import hashlib
 
 
 class User:
-    def __init__(self, name, password, parameters):
+    def __init__(self, name, password, parameters, mode):
         self.name = name
         self.password = password
         self.parameters = parameters
+        self.mode = mode
 
     def checkCredential(self, name, password):
         if(self.name == name and hashlib.sha256(password.encode('utf-8')).hexdigest() == self.password):
@@ -23,6 +24,12 @@ class User:
     def getName(self):
         return self.name
 
+    def getMode(self):
+        return self.mode
+
+    def setMode(self, mode):
+        self.mode = mode
+
     def getJson(self):
         parameterNames = ['Lower Rate Limit', 'Upper Rate Limit', 'Maximum Sensor Rate', 'Activity Threshold', 'Reaction Time', 'Response Factor', 'Recovery Time',
                           'Atrial Amplitude', 'Atrial Pulse Width', 'Ventricular Amplitude', 'Ventricular Pulse Width',
@@ -31,6 +38,7 @@ class User:
         value = {}
         value["name"] = self.name
         value["password"] = self.password
+        value["mode"] = self.mode
         valueParameters = {}
         for parameter in parameterNames:
             valueParameters[parameter] = self.parameters[parameter]

@@ -3,7 +3,8 @@
 Steps:
 
 1. pip install PySimpleGUI
-2. Run main.py for the GUI
+2. pip install numpy
+3. Run main.py for the GUI
 
 Info:
 
@@ -14,3 +15,4 @@ Info:
 Libraries:
 
 - PySimpleGUI==4.60.5
+- numpy==1.24.4

@@ -2,6 +2,7 @@
    "Has": {
       "name": "Has",
       "password": "688787d8ff144c502c7f5cffaafe2cc588d86079f9de88304c26b0cb99ce91c6",
+      "mode": "none",
       "parameters": {
          "Lower Rate Limit": 0,
          "Upper Rate Limit": 0,
@@ -26,21 +27,22 @@
    "Jimmy": {
       "name": "Jimmy",
       "password": "688787d8ff144c502c7f5cffaafe2cc588d86079f9de88304c26b0cb99ce91c6",
+      "mode": "AAIR",
       "parameters": {
-         "Lower Rate Limit": 200,
-         "Upper Rate Limit": 216,
+         "Lower Rate Limit": "200",
+         "Upper Rate Limit": 150,
          "Maximum Sensor Rate": 210,
-         "Activity Threshold": 200,
-         "Reaction Time": 200,
-         "Response Factor": 208,
-         "Recovery Time": 200,
+         "Activity Threshold": "Med-Low",
+         "Reaction Time": 10,
+         "Response Factor": "208",
+         "Recovery Time": "200",
          "Atrial Amplitude": 504,
          "Atrial Pulse Width": 312,
          "Ventricular Amplitude": 515,
          "Ventricular Pulse Width": "0",
          "Atrial Sensitivity": 306,
          "ARP": 315,
-         "PVARP": 312,
+         "PVARP": "312",
          "Ventricular Sensitivity": 0,
          "VRP": 504,
          "Hysteresis": 304,
@@ -50,6 +52,7 @@
    "Haashim": {
       "name": "Haashim",
       "password": "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
+      "mode": "none",
       "parameters": {
          "Lower Rate Limit": 0,
          "Upper Rate Limit": 0,
@@ -74,6 +77,7 @@
    "Bob": {
       "name": "Bob",
       "password": "930a68a51a2db950f58fd3b0b5f1d76f56afaa16e12a418d71ca6c25f2390424",
+      "mode": "none",
       "parameters": {
          "Lower Rate Limit": 0,
          "Upper Rate Limit": 0,
@@ -98,6 +102,7 @@
    "Marko": {
       "name": "Marko",
       "password": "48cf6c91c1d1eb864e1d7d6d38e65e6c02249083aca96740ba82f2f123a18177",
+      "mode": "none",
       "parameters": {
          "Lower Rate Limit": 0,
          "Upper Rate Limit": 0,
@@ -122,6 +127,7 @@
    "Yan": {
       "name": "Yan",
       "password": "688787d8ff144c502c7f5cffaafe2cc588d86079f9de88304c26b0cb99ce91c6",
+      "mode": "none",
       "parameters": {
          "Lower Rate Limit": 0,
          "Upper Rate Limit": 0,
@@ -146,6 +152,7 @@
    "Harry": {
       "name": "Harry",
       "password": "3d91a03ed870ec533147dfa1b13a738a819d32f2f09c64afbd6948b97030012c",
+      "mode": "none",
       "parameters": {
          "Lower Rate Limit": 0,
          "Upper Rate Limit": 0,
@@ -170,6 +177,57 @@
    "Jim": {
       "name": "Jim",
       "password": "e797c0013811a1d1e35ad7edd10fb99986db664b0996c76ed9ae5e0a5151bbf9",
+      "mode": "none",
+      "parameters": {
+         "Lower Rate Limit": 0,
+         "Upper Rate Limit": 0,
+         "Maximum Sensor Rate": 0,
+         "Activity Threshold": 0,
+         "Reaction Time": 0,
+         "Response Factor": 0,
+         "Recovery Time": 0,
+         "Atrial Amplitude": 0,
+         "Atrial Pulse Width": 0,
+         "Ventricular Amplitude": 0,
+         "Ventricular Pulse Width": 0,
+         "Atrial Sensitivity": 0,
+         "ARP": 0,
+         "PVARP": 0,
+         "Ventricular Sensitivity": 0,
+         "VRP": 0,
+         "Hysteresis": 0,
+         "Rate Smoothing": 0
+      }
+   },
+   "asd": {
+      "name": "asd",
+      "password": "688787d8ff144c502c7f5cffaafe2cc588d86079f9de88304c26b0cb99ce91c6",
+      "mode": "AOOR",
+      "parameters": {
+         "Lower Rate Limit": "0",
+         "Upper Rate Limit": "0",
+         "Maximum Sensor Rate": "0",
+         "Activity Threshold": "Med-Low",
+         "Reaction Time": "0",
+         "Response Factor": "0",
+         "Recovery Time": "0",
+         "Atrial Amplitude": "0",
+         "Atrial Pulse Width": "0",
+         "Ventricular Amplitude": 0,
+         "Ventricular Pulse Width": 0,
+         "Atrial Sensitivity": 0,
+         "ARP": 0,
+         "PVARP": 0,
+         "Ventricular Sensitivity": 0,
+         "VRP": 0,
+         "Hysteresis": 0,
+         "Rate Smoothing": 0
+      }
+   },
+   "wer": {
+      "name": "wer",
+      "password": "e797c0013811a1d1e35ad7edd10fb99986db664b0996c76ed9ae5e0a5151bbf9",
+      "mode": "none",
       "parameters": {
          "Lower Rate Limit": 0,
          "Upper Rate Limit": 0,

@@ -15,7 +15,7 @@ mode = ["AOOR", "AAIR", "VOOR", "VVIR"]
 curMode = ""
 windowMode = "none"
 infoMessage = ""
-dataBaseFile = "database.json"
+dataBaseFile = "./database/database.json"
 curUser = ""
 
 parameterNamesCommon = ['Lower Rate Limit', 'Upper Rate Limit', 'Maximum Sensor Rate',
@@ -45,7 +45,8 @@ def createUserDB(name, password):
         value["mode"] = "none"
         valueParameters = {}
         for parameter in parameterUtil.getParameterNames():
-            valueParameters[parameter] = parameterUtil.getParameterNominals()[parameter]
+            valueParameters[parameter] = parameterUtil.getParameterNominals()[
+                parameter]
         value["parameters"] = valueParameters
         users[name] = User(value["name"], value["password"],
                            valueParameters, value["mode"])
@@ -259,68 +260,79 @@ def getWindowByState():
 
 
 if __name__ == '__main__':
-    sg.theme('LightGrey1')
+    try:
+        sg.theme('LightGrey1')
 
-    while True:
-        window = getWindowByState()
+        while True:
+            window = getWindowByState()
 
-        event, values = window.read()
-        if event == sg.WIN_CLOSED or event == 'Cancel':
-            window.close()
-            break
+            event, values = window.read()
+            if event == sg.WIN_CLOSED or event == 'Cancel':
+                window.close()
+                break
 
-        if (logging):
-            print(state)
-
-        if (state == "login"):
-            getAllUsers()
-            if (event == "Login"):
-                if (logging):
-                    print(values)
-                if (users.get(getRealValue(values[0])) and users[getRealValue(values[0])].checkCredential(getRealValue(values[0]), getRealValue(values[1]))):
-                    infoMessage = ""
-                    state = "control"
-                    curUser = getRealValue(values[0])
-                    infoMessage = "Welcome to Control Panel for: " + curUser
-                    windowMode = users[getRealValue(values[0])].getMode()
-                else:
-                    infoMessage = "Password Incorrect or this user does not exist"
-            elif (event == "Create New User"):
-                infoMessage = ""
-                state = "createUser"
-        elif (state == "createUser"):
-            if (event == "Create New User"):
-                if (not (getRealValue(values[1]) == getRealValue(values[2]))):
-                    infoMessage = "Password mismatch"
-                elif (users.get(getRealValue(values[0]))):
-                    infoMessage = "User already exists"
-                else:
-                    if (logging):
-                        print("Creating New User: "+values[0])
-                    if(createUserDB(getRealValue(
-                            values[0]), getRealValue(values[1]))):
-                        infoMessage = "User successfully created"
-                    else:
-                        infoMessage = "System had reached to max number of users. Please contact support team for help"
-
-                    state = "login"
-            elif (event == "Back to Login"):
-                state = "login"
-        elif (state == "control"):
-            windowMode = values['mode']
-            if(windowMode in mode):
-                curMode = windowMode
             if (logging):
-                print(event)
-                print(values)
-            if (event == "Submit Parameters"):
-                users[curUser].updateParameters(getUpdatedParameters(values))
-                users[curUser].setMode(curMode)
-                infoMessage = "Parameters Successfully Updated!"
-                updateDatabase()
+                print(state)
+
+            if (state == "login"):
                 getAllUsers()
-            if (event == "Log Off"):
-                state = "login"
-                infoMessage = "Successful log off"
+                if (event == "Login"):
+                    if (logging):
+                        print(values)
+                    if (users.get(getRealValue(values[0])) and users[getRealValue(values[0])].checkCredential(getRealValue(values[0]), getRealValue(values[1]))):
+                        infoMessage = ""
+                        state = "control"
+                        curUser = getRealValue(values[0])
+                        infoMessage = "Welcome to Control Panel for: " + curUser
+                        windowMode = users[getRealValue(values[0])].getMode()
+                    else:
+                        infoMessage = "Password Incorrect or this user does not exist"
+                elif (event == "Create New User"):
+                    infoMessage = ""
+                    state = "createUser"
+            elif (state == "createUser"):
+                if (event == "Create New User"):
+                    if (not (getRealValue(values[1]) == getRealValue(values[2]))):
+                        infoMessage = "Password mismatch"
+                    elif (users.get(getRealValue(values[0]))):
+                        infoMessage = "User already exists"
+                    else:
+                        if (logging):
+                            print("Creating New User: "+values[0])
+                        if(createUserDB(getRealValue(
+                                values[0]), getRealValue(values[1]))):
+                            infoMessage = "User successfully created"
+                        else:
+                            infoMessage = "System had reached to max number of users. Please contact support team for help"
+
+                        state = "login"
+                elif (event == "Back to Login"):
+                    state = "login"
+            elif (state == "control"):
+                windowMode = values['mode']
+                if(windowMode in mode):
+                    curMode = windowMode
+                if (logging):
+                    print(event)
+                    print(values)
+                if (event == "Submit Parameters"):
+                    newParameters = getUpdatedParameters(values)
+                    check = parameterUtil.checkParameterInRange(newParameters)
+                    if(check == None):
+                        users[curUser].updateParameters(newParameters)
+                        users[curUser].setMode(curMode)
+                        infoMessage = "Parameters Successfully Updated!"
+                        updateDatabase()
+                        getAllUsers()
+                    else:
+                        infoMessage = "Double check the value entered are in range for parameter: " + \
+                            str(check)
+                if (event == "Log Off"):
+                    state = "login"
+                    infoMessage = "Successful log off"
+            window.close()
         window.close()
-    window.close()
+    except Exception as e:
+        window.close()
+        sg.popup_error_with_traceback(
+            "An error had occured. Please contact the support team with the following info: ", e)

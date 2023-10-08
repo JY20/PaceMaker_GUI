@@ -57,3 +57,9 @@ class parameterUtility:
 
     def getParameterNominals(self):
         return self.parameterNominals
+
+    def checkParameterInRange(self, newParameterValues):
+        for parameter in self.parameterNames:
+            if(newParameterValues[parameter] not in self.parameterValues):
+                return parameter
+        return None

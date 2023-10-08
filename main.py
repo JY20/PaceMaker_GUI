@@ -17,6 +17,8 @@ windowMode = "none"
 infoMessage = ""
 dataBaseFile = "database.json"
 curUser = ""
+connection = [('\u2B24' + ' Disconnect', 'red'), ('\u2B24' + ' Connect', 'green')]
+connection_state = 0
 
 parameterNamesCommon = ['Lower Rate Limit', 'Upper Rate Limit', 'Maximum Sensor Rate',
                         'Activity Threshold', 'Reaction Time', 'Response Factor', 'Recovery Time']
@@ -139,6 +141,7 @@ def getWindowByState():
     sizeText = 20
     layoutHeader = [
         [sg.Text(infoMessage, size=(50, 3),  text_color='red'), sg.Text()],
+        [sg.Text(connection[connection_state][0], size=(50, 3), text_color=connection[connection_state][1]),sg.Text()],
         [sg.Text("Mode", size=(sizeText, 1)), sg.Combo(mode, size=(
             sizeText, 1), enable_events=True, key='mode')],
         [sg.Text('', size=(sizeText, 1)), sg.Text()],
@@ -146,7 +149,7 @@ def getWindowByState():
 
     sizeText = 20
     if (state == "control"):
-        parameters = users[curUser].getParameters()
+        parameters = parameterUtil.getParameterNominals()
         parameterValues = parameterUtil.getParameterRangeValues()
         layoutCommonParameters = [
             [sg.Text('Lower Rate Limit (ppm)', size=(sizeText, 1)),

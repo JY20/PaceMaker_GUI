@@ -44,10 +44,10 @@ class parameterUtility:
             else:
                 self.parameterValues[parameter] = [i for i in np.arange(
                     parameterLowerLimit[parameter], parameterUpperLimit[parameter]+parameterIncrements[parameter], parameterIncrements[parameter])]
-        self.parameterNominals = {'Lower Rate Limit': 2, 'Upper Rate Limit': 5, 'Maximum Sensor Rate': 5, 'Activity Threshold': 2, 'Reaction Time': 10, 'Response Factor': 1, 'Recovery Time': 1,
-                                  'Atrial Amplitude':  2, 'Atrial Pulse Width': 0.01, 'Ventricular Amplitude': 5, 'Ventricular Pulse Width': 0.01,
-                                  'Atrial Sensitivity': 0.5, 'ARP': 10, 'PVARP': 10, 'Ventricular Sensitivity': 0.5, 'VRP': 10,
-                                  'Hysteresis': 2, 'Rate Smoothing': 3}
+        self.parameterNominals = {'Lower Rate Limit': 60, 'Upper Rate Limit': 120, 'Maximum Sensor Rate': 120, 'Activity Threshold': 'Med', 'Reaction Time': 30, 'Response Factor': 8, 'Recovery Time': 5,
+                                  'Atrial Amplitude':  3.5, 'Atrial Pulse Width': 0.4, 'Ventricular Amplitude': 3.5, 'Ventricular Pulse Width': 0.4,
+                                  'Atrial Sensitivity': 0.75, 'ARP': 250, 'PVARP': 250, 'Ventricular Sensitivity': 2.5, 'VRP': 250,
+                                  'Hysteresis': 0, 'Rate Smoothing': 0}
 
     def getParameterRangeValues(self):
         return self.parameterValues

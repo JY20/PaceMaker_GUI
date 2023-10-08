@@ -4,6 +4,7 @@ import json
 import hashlib
 
 from User import User
+from parameterUtility import parameterUtility
 
 maxUsers = 10
 
@@ -14,12 +15,8 @@ mode = ["AOOR", "AAIR", "VOOR", "VVIR"]
 curMode = ""
 windowMode = "none"
 infoMessage = ""
-dataBaseFile = "database.json"
+dataBaseFile = "./database/database.json"
 curUser = ""
-parameterNames = ['Lower Rate Limit', 'Upper Rate Limit', 'Maximum Sensor Rate', 'Activity Threshold', 'Reaction Time', 'Response Factor', 'Recovery Time',
-                  'Atrial Amplitude', 'Atrial Pulse Width', 'Ventricular Amplitude', 'Ventricular Pulse Width',
-                  'Atrial Sensitivity', 'ARP', 'PVARP', 'Ventricular Sensitivity', 'VRP',
-                  'Hysteresis', 'Rate Smoothing']
 
 parameterNamesCommon = ['Lower Rate Limit', 'Upper Rate Limit', 'Maximum Sensor Rate',
                         'Activity Threshold', 'Reaction Time', 'Response Factor', 'Recovery Time']
@@ -29,6 +26,8 @@ parameterNamesAIR = ['Atrial Sensitivity', 'ARP',
                      'PVARP', 'Hysteresis', 'Rate Smoothing']
 parameterNamesVIR = ['Ventricular Sensitivity',
                      'VRP', 'Hysteresis', 'Rate Smoothing']
+
+parameterUtil = parameterUtility()
 
 
 def getRealValue(value):
@@ -45,8 +44,9 @@ def createUserDB(name, password):
             password.encode('utf-8')).hexdigest()
         value["mode"] = "none"
         valueParameters = {}
-        for parameter in parameterNames:
-            valueParameters[parameter] = None
+        for parameter in parameterUtil.getParameterNames():
+            valueParameters[parameter] = parameterUtil.getParameterNominals()[
+                parameter]
         value["parameters"] = valueParameters
         users[name] = User(value["name"], value["password"],
                            valueParameters, value["mode"])
@@ -148,43 +148,7 @@ def getWindowByState():
     sizeText = 20
     if (state == "control"):
         parameters = users[curUser].getParameters()
-        parameterUpperLimit = {'Lower Rate Limit': 2000, 'Upper Rate Limit': 175, 'Maximum Sensor Rate': 175, 'Activity Threshold': 2000, 'Reaction Time': 50, 'Response Factor': 16, 'Recovery Time': 16,
-                               'Atrial Amplitude':  5000, 'Atrial Pulse Width': 1.9, 'Ventricular Amplitude': 5000, 'Ventricular Pulse Width': 1.9,
-                               'Atrial Sensitivity': 10, 'ARP': 500, 'PVARP': 500, 'Ventricular Sensitivity': 10, 'VRP': 500,
-                               'Hysteresis': 3000, 'Rate Smoothing': 3000}
-        parameterLowerLimit = {'Lower Rate Limit': 200, 'Upper Rate Limit': 50, 'Maximum Sensor Rate': 50, 'Activity Threshold': 200, 'Reaction Time': 10, 'Response Factor': 1, 'Recovery Time': 2,
-                               'Atrial Amplitude':  500, 'Atrial Pulse Width': 0.01, 'Ventricular Amplitude': 500, 'Ventricular Pulse Width': 0.01,
-                               'Atrial Sensitivity': 1, 'ARP': 150, 'PVARP': 150, 'Ventricular Sensitivity': 1, 'VRP': 150,
-                               'Hysteresis': 300, 'Rate Smoothing': 300}
-
-        parameterIncrements = {'Lower Rate Limit': 2, 'Upper Rate Limit': 5, 'Maximum Sensor Rate': 5, 'Activity Threshold': 2, 'Reaction Time': 10, 'Response Factor': 1, 'Recovery Time': 1,
-                               'Atrial Amplitude':  2, 'Atrial Pulse Width': 0.01, 'Ventricular Amplitude': 5, 'Ventricular Pulse Width': 0.01,
-                               'Atrial Sensitivity': 0.5, 'ARP': 10, 'PVARP': 10, 'Ventricular Sensitivity': 0.5, 'VRP': 10,
-                               'Hysteresis': 2, 'Rate Smoothing': 3}
-
-        parameterValues = {}
-        for parameter in parameterNames:
-            if(parameter == 'Lower Rate Limit' or parameter == 'Hysteresis'):
-                parameterValues[parameter] = [i for i in np.arange(
-                    30, 50+5, 5)] + [i for i in np.arange(50, 90+1, 1)] + [i for i in np.arange(90, 175+5, 5)]
-            elif(parameter == 'Activity Threshold'):
-                parameterValues[parameter] = ['V-Low', 'Low',
-                                              'Med-Low', 'Med', 'Med-High', 'High', 'V-High']
-            elif(parameter == 'Rate Smoothing'):
-                parameterValues[parameter] = [0, 3, 6, 9, 12, 15, 18, 21, 25]
-            elif(parameter == 'Atrial Sensitivity' or parameter == 'Ventricular Sensitivity'):
-                parameterValues[parameter] = [0.25, 0.5, 0.75] + [i for i in np.arange(
-                    parameterLowerLimit[parameter], parameterUpperLimit[parameter]+parameterIncrements[parameter], parameterIncrements[parameter])]
-            elif(parameter == 'Atrial Pulse Width' or parameter == 'Ventricular Pulse Width'):
-                parameterValues[parameter] = [0.05]+[i for i in np.arange(
-                    parameterLowerLimit[parameter], parameterUpperLimit[parameter]+parameterIncrements[parameter], parameterIncrements[parameter])]
-            if(parameter == 'Atrial Amplitude' or parameter == 'Ventricular Amplitude'):
-                parameterValues[parameter] = [
-                    0] + [i for i in np.arange(0.5, 3.2+0.1, 0.1)] + [i for i in np.arange(3.5, 7, 0.5)]
-            else:
-                parameterValues[parameter] = [i for i in np.arange(
-                    parameterLowerLimit[parameter], parameterUpperLimit[parameter]+parameterIncrements[parameter], parameterIncrements[parameter])]
-
+        parameterValues = parameterUtil.getParameterRangeValues()
         layoutCommonParameters = [
             [sg.Text('Lower Rate Limit (ppm)', size=(sizeText, 1)),
              sg.Spin(parameterValues['Lower Rate Limit'], initial_value=parameters['Lower Rate Limit'], readonly=False,  size=sizeText)],
@@ -296,68 +260,79 @@ def getWindowByState():
 
 
 if __name__ == '__main__':
-    sg.theme('LightGrey1')
+    try:
+        sg.theme('LightGrey1')
 
-    while True:
-        window = getWindowByState()
+        while True:
+            window = getWindowByState()
 
-        event, values = window.read()
-        if event == sg.WIN_CLOSED or event == 'Cancel':
-            window.close()
-            break
+            event, values = window.read()
+            if event == sg.WIN_CLOSED or event == 'Cancel':
+                window.close()
+                break
 
-        if (logging):
-            print(state)
-
-        if (state == "login"):
-            getAllUsers()
-            if (event == "Login"):
-                if (logging):
-                    print(values)
-                if (users.get(getRealValue(values[0])) and users[getRealValue(values[0])].checkCredential(getRealValue(values[0]), getRealValue(values[1]))):
-                    infoMessage = ""
-                    state = "control"
-                    curUser = getRealValue(values[0])
-                    infoMessage = "Welcome to Control Panel for: " + curUser
-                    windowMode = users[getRealValue(values[0])].getMode()
-                else:
-                    infoMessage = "Password Incorrect or this user does not exist"
-            elif (event == "Create New User"):
-                infoMessage = ""
-                state = "createUser"
-        elif (state == "createUser"):
-            if (event == "Create New User"):
-                if (not (getRealValue(values[1]) == getRealValue(values[2]))):
-                    infoMessage = "Password mismatch"
-                elif (users.get(getRealValue(values[0]))):
-                    infoMessage = "User already exists"
-                else:
-                    if (logging):
-                        print("Creating New User: "+values[0])
-                    if(createUserDB(getRealValue(
-                            values[0]), getRealValue(values[1]))):
-                        infoMessage = "User successfully created"
-                    else:
-                        infoMessage = "System had reached to max number of users. Please contact support team for help"
-
-                    state = "login"
-            elif (event == "Back to Login"):
-                state = "login"
-        elif (state == "control"):
-            windowMode = values['mode']
-            if(windowMode in mode):
-                curMode = windowMode
             if (logging):
-                print(event)
-                print(values)
-            if (event == "Submit Parameters"):
-                users[curUser].updateParameters(getUpdatedParameters(values))
-                users[curUser].setMode(curMode)
-                infoMessage = "Parameters Successfully Updated!"
-                updateDatabase()
+                print(state)
+
+            if (state == "login"):
                 getAllUsers()
-            if (event == "Log Off"):
-                state = "login"
-                infoMessage = "Successful log off"
+                if (event == "Login"):
+                    if (logging):
+                        print(values)
+                    if (users.get(getRealValue(values[0])) and users[getRealValue(values[0])].checkCredential(getRealValue(values[0]), getRealValue(values[1]))):
+                        infoMessage = ""
+                        state = "control"
+                        curUser = getRealValue(values[0])
+                        infoMessage = "Welcome to Control Panel for: " + curUser
+                        windowMode = users[getRealValue(values[0])].getMode()
+                    else:
+                        infoMessage = "Password Incorrect or this user does not exist"
+                elif (event == "Create New User"):
+                    infoMessage = ""
+                    state = "createUser"
+            elif (state == "createUser"):
+                if (event == "Create New User"):
+                    if (not (getRealValue(values[1]) == getRealValue(values[2]))):
+                        infoMessage = "Password mismatch"
+                    elif (users.get(getRealValue(values[0]))):
+                        infoMessage = "User already exists"
+                    else:
+                        if (logging):
+                            print("Creating New User: "+values[0])
+                        if(createUserDB(getRealValue(
+                                values[0]), getRealValue(values[1]))):
+                            infoMessage = "User successfully created"
+                        else:
+                            infoMessage = "System had reached to max number of users. Please contact support team for help"
+
+                        state = "login"
+                elif (event == "Back to Login"):
+                    state = "login"
+            elif (state == "control"):
+                windowMode = values['mode']
+                if(windowMode in mode):
+                    curMode = windowMode
+                if (logging):
+                    print(event)
+                    print(values)
+                if (event == "Submit Parameters"):
+                    newParameters = getUpdatedParameters(values)
+                    check = parameterUtil.checkParameterInRange(newParameters)
+                    if(check == None):
+                        users[curUser].updateParameters(newParameters)
+                        users[curUser].setMode(curMode)
+                        infoMessage = "Parameters Successfully Updated!"
+                        updateDatabase()
+                        getAllUsers()
+                    else:
+                        infoMessage = "Double check the value entered are in range for parameter: " + \
+                            str(check)
+                if (event == "Log Off"):
+                    state = "login"
+                    infoMessage = "Successful log off"
+            window.close()
         window.close()
-    window.close()
+    except Exception as e:
+        window.close()
+        sg.popup_error_with_traceback(
+            "An error had occured. Please contact the support team with the following info: ", e)

@@ -59,7 +59,7 @@ def updateDataBaseFile():
     if("src" not in os.getcwd()):
         newdataBaseFile = "./src/"+dataBaseFile.split("./")[1]
         return newdataBaseFile
-
+    return dataBaseFile
 
 # get all the json values of current users
 

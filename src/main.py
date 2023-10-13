@@ -210,7 +210,7 @@ def getWindowByState():
             [sg.Text('Hysteresis (ppm)', size=(sizeText, 1)),
              sg.Spin(values=parameterValues['Hysteresis'], initial_value=parameters['Hysteresis'], readonly=False,  size=sizeText2)],
             [sg.Text('Rate Smoothing (%)', size=(sizeText, 1)),
-             sg.Spin(values=parameterValues['Rate Smoothing'], initial_value=parameters['Rate Smoothing'], readonly=False,  size=sizeText)],
+             sg.Spin(values=parameterValues['Rate Smoothing'], initial_value=parameters['Rate Smoothing'], readonly=False,  size=sizeText2)],
         ]
         layoutSubmit = [
             sg.Button('Submit Parameters')

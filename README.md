@@ -2,10 +2,9 @@
 
 Steps to start the applicaion:
 
-1. pip install PySimpleGUI
-2. pip install numpy
-3. cd src
-4. py main.py
+1. cd src
+2. pip install -r requirements.txt
+3. py main.py
 
 Info:
 

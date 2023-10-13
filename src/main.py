@@ -2,6 +2,7 @@ import PySimpleGUI as sg
 import numpy as np
 import json
 import hashlib
+import os
 
 from User import User
 from parameterUtility import parameterUtility
@@ -51,6 +52,15 @@ def createUserDB(name, password):
     else:
         return False
 
+# update the database file path when run from pacemaker_gui instead
+
+
+def updateDataBaseFile():
+    if("src" not in os.getcwd()):
+        newdataBaseFile = "./src/"+dataBaseFile.split("./")[1]
+        return newdataBaseFile
+
+
 # get all the json values of current users
 
 
@@ -59,6 +69,7 @@ def getAllUsersCurrentJson():
     for user in users:
         value[user] = users[user].getJson()
     return value
+
 
 # get all users in database
 
@@ -275,6 +286,7 @@ def getWindowByState():
 # main function to run GUI
 if __name__ == '__main__':
     try:
+        dataBaseFile = updateDataBaseFile()
         sg.theme('LightGrey1')
 
         while True:

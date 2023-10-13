@@ -17,3 +17,8 @@ Libraries:
 
 - PySimpleGUI==4.60.5
 - numpy==1.24.4
+
+Note for Dev:
+
+For dev database, please update following dayabaseFile to the following:
+dataBaseFile = "./database/database_dev.json"

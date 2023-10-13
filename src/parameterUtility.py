@@ -78,7 +78,7 @@ class parameterUtility:
 
     # checks if parameter value is in range
     def checkParameterInRange(self, newParameterValues):
-        for parameter in self.parameterNames:
-            if(newParameterValues[parameter] not in self.parameterValues):
+        for parameter in newParameterValues:
+            if(newParameterValues[parameter] not in self.parameterValues[parameter]):
                 return parameter
         return None

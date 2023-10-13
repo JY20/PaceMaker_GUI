@@ -1,4 +1,5 @@
 import hashlib
+import numpy as np
 
 
 class User:
@@ -51,5 +52,9 @@ class User:
         valueParameters = {}
         for parameter in parameterNames:
             valueParameters[parameter] = self.parameters[parameter]
+            if(type(valueParameters[parameter]) == type(np.int32(1))):
+                valueParameters[parameter] = int(valueParameters[parameter])
+            elif(type(valueParameters[parameter]) == type(np.float64(1))):
+                valueParameters[parameter] = float(valueParameters[parameter])
         value["parameters"] = valueParameters
         return value

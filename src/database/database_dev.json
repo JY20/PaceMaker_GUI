@@ -30,7 +30,7 @@
       "mode": "VVI",
       "parameters": {
          "Lower Rate Limit": 30,
-         "Upper Rate Limit": 165,
+         "Upper Rate Limit": 170,
          "Maximum Sensor Rate": 55,
          "Activity Threshold": "V-High",
          "Reaction Time": 20,

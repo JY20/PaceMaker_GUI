@@ -164,7 +164,11 @@ def getWindowByState():
          sg.InputText(password_char='*', size=(sizeInput, 1))],
         [sg.Text('', size=(sizeText, 1)), sg.Text()],
         [sg.Button('Create New User')], [sg.Button('Back to Login')]]
-
+    layoutEgram = [
+        [sg.Text(infoMessage, text_color='red'), sg.Text()],
+        [sg.Text("Placeholder for egram")],
+        [sg.Button('Back to Parameters Screen')]
+    ]
     sizeText = 30
     sizeText2 = 15
     if (state == "control"):
@@ -176,6 +180,7 @@ def getWindowByState():
              sg.Text(curMode, size=(sizeText2, 1))],
             [sg.Text("Mode", size=(sizeText, 1)), sg.Combo(mode, size=(
                 sizeText2, 1), enable_events=True, key='mode')],
+            [sg.Button('View Egram')],
             [sg.Text('', size=(sizeText, 1)), sg.Text()],
         ]
         parameters = users[curUser].getParameters()
@@ -257,6 +262,9 @@ def getWindowByState():
     elif (state == "createUser"):
         window = sg.Window('PaceMaker', layoutCreateUser, resizable=True)
         return window
+    elif (state == "egram"):
+        window = sg.Window('PaceMaker', layoutEgram, resizable=True)
+        return window
 
 
 # main function to run GUI
@@ -330,9 +338,16 @@ if __name__ == '__main__':
                     else:
                         infoMessage = "Double check the value entered are in range for parameter: " + \
                             str(check)
+                if (event == "View Egram"):
+                    state = "egram"
+                    infoMessage = ""
                 if (event == "Log Off"):
                     state = "login"
                     infoMessage = "Successful log off"
+            elif (state == "egram"):
+                if (event == "Back to Parameters Screen"):
+                    state = "control"
+                    infoMessage = "Welcome to Control Panel for: " + curUser
             window.close()
         window.close()
     except Exception as e:

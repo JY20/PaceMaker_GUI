@@ -1,3 +1,27 @@
 {
-   
+   "Jimmy": {
+      "name": "Jimmy",
+      "password": "688787d8ff144c502c7f5cffaafe2cc588d86079f9de88304c26b0cb99ce91c6",
+      "mode": "AAI",
+      "parameters": {
+         "Lower Rate Limit": 61,
+         "Upper Rate Limit": 140,
+         "Maximum Sensor Rate": 120,
+         "Activity Threshold": "Med",
+         "Reaction Time": 30,
+         "Response Factor": 8,
+         "Recovery Time": 5,
+         "Atrial Amplitude": 3.5,
+         "Atrial Pulse Width": 0.44,
+         "Ventricular Amplitude": 3.5,
+         "Ventricular Pulse Width": 0.4,
+         "Atrial Sensitivity": 0.75,
+         "ARP": 250,
+         "PVARP": 250,
+         "Ventricular Sensitivity": 2.5,
+         "VRP": 250,
+         "Hysteresis": 0,
+         "Rate Smoothing": 3
+      }
+   }
 }

@@ -18,7 +18,8 @@ infoMessage = ""  # info message for users
 dataBaseFile = "./database/database.json"  # name and path to database
 curUser = ""  # current user name
 parameterUtil = parameterUtility()  # utility class object for parameter functions
-mode = ["AOOR", "AAIR", "VOOR", "VVIR"]  # list of modes
+mode = ["AOO", "AAI", "VOO", "VVI", "AOOR",
+        "AAIR", "VOOR", "VVIR"]  # list of modes
 
 # remove the spaces and get the real value
 
@@ -93,14 +94,16 @@ def updateDatabase():
 
 # convert event values to parameters dicts
 def getUpdatedParameters(values):
-    parameterNamesCommon = ['Lower Rate Limit', 'Upper Rate Limit', 'Maximum Sensor Rate',
-                            'Activity Threshold', 'Reaction Time', 'Response Factor', 'Recovery Time']
+    parameterNamesCommon = ['Lower Rate Limit',
+                            'Upper Rate Limit']
     parameterNamesA = ['Atrial Amplitude', 'Atrial Pulse Width']
     parameterNamesV = ['Ventricular Amplitude', 'Ventricular Pulse Width']
-    parameterNamesAIR = ['Atrial Sensitivity', 'ARP',
-                         'PVARP', 'Hysteresis', 'Rate Smoothing']
-    parameterNamesVIR = ['Ventricular Sensitivity',
-                         'VRP', 'Hysteresis', 'Rate Smoothing']
+    parameterNamesAI = ['Atrial Sensitivity', 'ARP',
+                        'PVARP', 'Hysteresis', 'Rate Smoothing']
+    parameterNamesVI = ['Ventricular Sensitivity',
+                        'VRP', 'Hysteresis', 'Rate Smoothing']
+    parameterNamesR = ['Maximum Sensor Rate', 'Activity Threshold',
+                       'Reaction Time', 'Response Factor', 'Recovery Time']
     count = 0
     updated_parameters = {}
     for parameter in parameterNamesCommon:
@@ -114,12 +117,16 @@ def getUpdatedParameters(values):
         for parameter in parameterNamesV:
             updated_parameters[parameter] = values[count]
             count += 1
-    if("AIR" in curMode):
-        for parameter in parameterNamesAIR:
+    if("AI" in curMode):
+        for parameter in parameterNamesAI:
             updated_parameters[parameter] = values[count]
             count += 1
-    if("VIR" in curMode):
-        for parameter in parameterNamesVIR:
+    if("VI" in curMode):
+        for parameter in parameterNamesVI:
+            updated_parameters[parameter] = values[count]
+            count += 1
+    if("R" in curMode):
+        for parameter in parameterNamesR:
             updated_parameters[parameter] = values[count]
             count += 1
 
@@ -173,22 +180,23 @@ def getWindowByState():
         ]
         parameters = users[curUser].getParameters()
         parameterValues = parameterUtil.getParameterRangeValues()
-        layoutCommonParameters = [
+        layoutCommons = [
             [sg.Text('Lower Rate Limit (ppm)', size=(sizeText, 1)),
              sg.Spin(parameterValues['Lower Rate Limit'], initial_value=parameters['Lower Rate Limit'], readonly=False,  size=sizeText2)],
             [sg.Text('Upper Rate Limit (ppm)', size=(sizeText, 1)),
              sg.Spin(values=parameterValues['Upper Rate Limit'], initial_value=parameters['Upper Rate Limit'], readonly=False,  size=sizeText2)],
-            [sg.Text('Maximum Sensor Rate (ppm)', size=(sizeText, 1)),
-             sg.Spin(values=parameterValues['Maximum Sensor Rate'], initial_value=parameters['Maximum Sensor Rate'], readonly=False,  size=sizeText2)],
-            [sg.Text('Activity Threshold', size=(sizeText, 1)),
-             sg.Spin(values=parameterValues['Activity Threshold'], initial_value=parameters['Activity Threshold'], readonly=False,  size=sizeText2)],
-            [sg.Text('Reaction Time (sec)', size=(sizeText, 1)),
-             sg.Spin(values=parameterValues['Reaction Time'], initial_value=parameters['Reaction Time'], readonly=False,  size=sizeText2)],
-            [sg.Text('Response Factor', size=(sizeText, 1)),
-             sg.Spin(values=parameterValues['Response Factor'], initial_value=parameters['Response Factor'], readonly=False,  size=sizeText2)],
-            [sg.Text('Recovery Time (min)', size=(sizeText, 1)),
-             sg.Spin(values=parameterValues['Recovery Time'], initial_value=parameters['Recovery Time'], readonly=False,  size=sizeText2)],
         ]
+        layoutR = [[sg.Text('Maximum Sensor Rate (ppm)', size=(sizeText, 1)),
+                    sg.Spin(values=parameterValues['Maximum Sensor Rate'], initial_value=parameters['Maximum Sensor Rate'], readonly=False,  size=sizeText2)],
+                   [sg.Text('Activity Threshold', size=(sizeText, 1)),
+                    sg.Spin(values=parameterValues['Activity Threshold'], initial_value=parameters['Activity Threshold'], readonly=False,  size=sizeText2)],
+                   [sg.Text('Reaction Time (sec)', size=(sizeText, 1)),
+                    sg.Spin(values=parameterValues['Reaction Time'], initial_value=parameters['Reaction Time'], readonly=False,  size=sizeText2)],
+                   [sg.Text('Response Factor', size=(sizeText, 1)),
+                    sg.Spin(values=parameterValues['Response Factor'], initial_value=parameters['Response Factor'], readonly=False,  size=sizeText2)],
+                   [sg.Text('Recovery Time (min)', size=(sizeText, 1)),
+                    sg.Spin(values=parameterValues['Recovery Time'], initial_value=parameters['Recovery Time'], readonly=False,  size=sizeText2)],
+                   ]
         layoutA = [
             [sg.Text('Atrial Amplitude', size=(sizeText, 1)),
              sg.Spin(values=parameterValues['Atrial Amplitude'], initial_value=parameters['Atrial Amplitude'], readonly=False,  size=sizeText2)],
@@ -201,7 +209,7 @@ def getWindowByState():
             [sg.Text('Ventricular Pulse Width (ms)', size=(sizeText, 1)),
              sg.Spin(values=parameterValues['Ventricular Pulse Width'], initial_value=parameters['Ventricular Pulse Width'], readonly=False,  size=sizeText2)],
         ]
-        layoutAIR = [
+        layoutAI = [
             [sg.Text('Atrial Sensitivity (mV)', size=(sizeText, 1)),
              sg.Spin(values=parameterValues['Atrial Sensitivity'], initial_value=parameters['Atrial Sensitivity'], readonly=False,  size=sizeText2)],
             [sg.Text('ARP (ms)', size=(sizeText, 1)), sg.Spin(
@@ -213,7 +221,7 @@ def getWindowByState():
             [sg.Text('Rate Smoothing (%)', size=(sizeText, 1)),
              sg.Spin(values=parameterValues['Rate Smoothing'], initial_value=parameters['Rate Smoothing'], readonly=False,  size=sizeText2)],
         ]
-        layoutVIR = [
+        layoutVI = [
             [sg.Text('Ventricular Sensitivity (mV)', size=(sizeText, 1)),
              sg.Spin(values=parameterValues['Ventricular Sensitivity'], initial_value=parameters['Ventricular Sensitivity'], readonly=False,  size=sizeText2)],
             [sg.Text('VRP (ms)', size=(sizeText, 1)), sg.Spin(
@@ -223,61 +231,29 @@ def getWindowByState():
             [sg.Text('Rate Smoothing (%)', size=(sizeText, 1)),
              sg.Spin(values=parameterValues['Rate Smoothing'], initial_value=parameters['Rate Smoothing'], readonly=False,  size=sizeText2)],
         ]
-        layoutSubmit = [
-            sg.Button('Submit Parameters')
-        ]
-        layoutLogOff = [
-            sg.Button('Log Off')
-        ]
-        layoutCommon = [layoutHeader, layoutLogOff]
-        layoutAOOR = [
-            layoutHeader,
-            layoutCommonParameters,
-            layoutA,
-            layoutSubmit,
-            layoutLogOff
-        ]
-        layoutAAIR = [
-            layoutHeader,
-            layoutCommonParameters,
-            layoutA,
-            layoutAIR,
-            layoutSubmit,
-            layoutLogOff
-        ]
-        layoutVOOR = [
-            layoutHeader,
-            layoutCommonParameters,
-            layoutV,
-            layoutSubmit,
-            layoutLogOff
-        ]
-        layoutVVIR = [
-            layoutHeader,
-            layoutCommonParameters,
-            layoutV,
-            layoutVIR,
-            layoutSubmit,
-            layoutLogOff
-        ]
-
+        layoutFooter = [[sg.Button('Submit Parameters')],
+                        [sg.Button('Log Off')]]
     if (state == "login"):
         window = sg.Window('PaceMaker', layoutLogin, resizable=True)
         return window
     elif (state == "control"):
         if(logging):
             print(event)
-        if (windowMode == "AOOR"):
-            window = sg.Window('PaceMaker', layoutAOOR, resizable=True)
-        elif (windowMode == "AAIR"):
-            window = sg.Window('PaceMaker', layoutAAIR, resizable=True)
-        elif (windowMode == "VOOR"):
-            window = sg.Window('PaceMaker', layoutVOOR, resizable=True)
-        elif (windowMode == "VVIR"):
-            window = sg.Window('PaceMaker', layoutVVIR, resizable=True)
-        else:
-            window = sg.Window('PaceMaker', layoutCommon, resizable=True)
-        return window
+        layoutControl = [layoutHeader]
+        if("A" in curMode):
+            layoutControl.append(layoutCommons)
+            layoutControl.append(layoutA)
+        if("V" in curMode):
+            layoutControl.append(layoutCommons)
+            layoutControl.append(layoutV)
+        if("AI" in curMode):
+            layoutControl.append(layoutAI)
+        if("VI" in curMode):
+            layoutControl.append(layoutVI)
+        if("R" in curMode):
+            layoutControl.append(layoutR)
+        layoutControl.append(layoutFooter)
+        return sg.Window('PaceMaker', layoutControl, resizable=True)
     elif (state == "createUser"):
         window = sg.Window('PaceMaker', layoutCreateUser, resizable=True)
         return window

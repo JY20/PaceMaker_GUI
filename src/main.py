@@ -20,6 +20,9 @@ curUser = ""  # current user name
 parameterUtil = parameterUtility()  # utility class object for parameter functions
 mode = ["AOO", "AAI", "VOO", "VVI", "AOOR",
         "AAIR", "VOOR", "VVIR"]  # list of modes
+# dict for time and voltage list of egram data
+egramData = {"time": [], "voltage": []}
+
 
 # remove the spaces and get the real value
 

@@ -168,7 +168,7 @@ def getWindowByState():
         [sg.Button('Create New User')], [sg.Button('Back to Login')]]
     layoutEgram = [
         [sg.Text(infoMessage, text_color='red'), sg.Text()],
-        [sg.Table([egramUtil.returnColumn("time"), egramUtil.returnColumn("voltage")], ['Time (ms)','Voltage (V)'], num_rows=egramUtil.returnNumberOfObservations())],
+        [sg.Text("Placeholder for egram")],
         [sg.Button('Back to Parameters Screen')]
     ]
     sizeText = 30
@@ -341,12 +341,14 @@ if __name__ == '__main__':
                             str(check)
                 if (event == "View Egram"):
                     state = "egram"
+                    infoMessage = ""
                 if (event == "Log Off"):
                     state = "login"
                     infoMessage = "Successful log off"
             elif (state == "egram"):
                 if (event == "Back to Parameters Screen"):
                     state = "control"
+                    infoMessage = "Welcome to Control Panel for: " + curUser
             window.close()
         window.close()
     except Exception as e:

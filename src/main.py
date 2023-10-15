@@ -6,6 +6,7 @@ import os
 
 from User import User
 from parameterUtility import parameterUtility
+from Egram import egramUtility
 
 maxUsers = 10  # max users
 
@@ -18,6 +19,7 @@ infoMessage = ""  # info message for users
 dataBaseFile = "./database/database.json"  # name and path to database
 curUser = ""  # current user name
 parameterUtil = parameterUtility()  # utility class object for parameter functions
+egramUtil = egramUtility()  # utility class object for egram functions
 mode = ["AOO", "AAI", "VOO", "VVI", "AOOR",
         "AAIR", "VOOR", "VVIR"]  # list of modes
 
@@ -164,7 +166,11 @@ def getWindowByState():
          sg.InputText(password_char='*', size=(sizeInput, 1))],
         [sg.Text('', size=(sizeText, 1)), sg.Text()],
         [sg.Button('Create New User')], [sg.Button('Back to Login')]]
-
+    layoutEgram = [
+        [sg.Text(infoMessage, text_color='red'), sg.Text()],
+        [sg.Table([egramUtil.returnColumn("time"), egramUtil.returnColumn("voltage")], ['Time (ms)','Voltage (V)'], num_rows=egramUtil.returnNumberOfObservations())],
+        [sg.Button('Back to Parameters Screen')]
+    ]
     sizeText = 30
     sizeText2 = 15
     if (state == "control"):
@@ -176,6 +182,7 @@ def getWindowByState():
              sg.Text(curMode, size=(sizeText2, 1))],
             [sg.Text("Mode", size=(sizeText, 1)), sg.Combo(mode, size=(
                 sizeText2, 1), enable_events=True, key='mode')],
+            [sg.Button('View Egram')],
             [sg.Text('', size=(sizeText, 1)), sg.Text()],
         ]
         parameters = users[curUser].getParameters()
@@ -257,7 +264,9 @@ def getWindowByState():
     elif (state == "createUser"):
         window = sg.Window('PaceMaker', layoutCreateUser, resizable=True)
         return window
-
+    elif (state == "egram"):
+        window = sg.Window('PaceMaker', layoutEgram, resizable=True)
+        return window
 
 # main function to run GUI
 if __name__ == '__main__':
@@ -330,9 +339,14 @@ if __name__ == '__main__':
                     else:
                         infoMessage = "Double check the value entered are in range for parameter: " + \
                             str(check)
+                if (event == "View Egram"):
+                    state = "egram"
                 if (event == "Log Off"):
                     state = "login"
                     infoMessage = "Successful log off"
+            elif (state == "egram"):
+                if (event == "Back to Parameters Screen"):
+                    state = "control"
             window.close()
         window.close()
     except Exception as e:

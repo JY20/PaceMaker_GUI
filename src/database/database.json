@@ -1,2 +1,27 @@
 {
+   "Marko": {
+      "name": "Marko",
+      "password": "48cf6c91c1d1eb864e1d7d6d38e65e6c02249083aca96740ba82f2f123a18177",
+      "mode": "none",
+      "parameters": {
+         "Lower Rate Limit": 60,
+         "Upper Rate Limit": 120,
+         "Maximum Sensor Rate": 120,
+         "Activity Threshold": "Med",
+         "Reaction Time": 30,
+         "Response Factor": 8,
+         "Recovery Time": 5,
+         "Atrial Amplitude": 3.5,
+         "Atrial Pulse Width": 0.4,
+         "Ventricular Amplitude": 3.5,
+         "Ventricular Pulse Width": 0.4,
+         "Atrial Sensitivity": 0.75,
+         "ARP": 250,
+         "PVARP": 250,
+         "Ventricular Sensitivity": 2.5,
+         "VRP": 250,
+         "Hysteresis": 0,
+         "Rate Smoothing": 0
+      }
+   }
 }

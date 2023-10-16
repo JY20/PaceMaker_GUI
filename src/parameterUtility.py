@@ -51,7 +51,7 @@ class parameterUtility:
                     self.parameterValues[parameter], 2)
             elif(parameter == 'Atrial Amplitude' or parameter == 'Ventricular Amplitude'):
                 self.parameterValues[parameter] = [
-                    0] + [i for i in np.arange(0.5, 3.2+0.1, 0.1)] + [i for i in np.arange(3.5, 7, 0.5)]
+                    0] + [i for i in np.arange(0.5, 3.2+0.1, 0.1)] + [i for i in np.arange(3.5, 7+0.5, 0.5)]
                 self.parameterValues[parameter] = np.round(
                     self.parameterValues[parameter], 2)
             else:
@@ -79,6 +79,9 @@ class parameterUtility:
     # checks if parameter value is in range
     def checkParameterInRange(self, newParameterValues):
         for parameter in newParameterValues:
+            if(type(newParameterValues[parameter]) == str):
+                newParameterValues[parameter] = np.float64(
+                    newParameterValues[parameter])
             if(newParameterValues[parameter] not in self.parameterValues[parameter]):
                 return parameter
         return None

@@ -79,7 +79,7 @@ class parameterUtility:
     # checks if parameter value is in range
     def checkParameterInRange(self, newParameterValues):
         for parameter in newParameterValues:
-            if(type(newParameterValues[parameter]) == str):
+            if(type(newParameterValues[parameter]) == str and newParameterValues[parameter] not in self.parameterValues['Activity Threshold']):
                 newParameterValues[parameter] = np.float64(
                     newParameterValues[parameter])
             if(newParameterValues[parameter] not in self.parameterValues[parameter]):

@@ -1,11 +1,18 @@
+from parameterUtility import parameterUtility
+from User import User
+import matplotlib.pyplot as plt
 import PySimpleGUI as sg
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib
+import time
+import threading
 import numpy as np
 import json
 import hashlib
 import os
+import matplotlib
+matplotlib.use('TkAgg')
 
-from User import User
-from parameterUtility import parameterUtility
 
 maxUsers = 10  # max users
 
@@ -15,7 +22,7 @@ state = "login"  # state of GUI
 curMode = ""  # mode for the user
 windowMode = "none"  # mode from events of the winodw GUI
 infoMessage = ""  # info message for users
-dataBaseFile = "./database/database.json"  # name and path to database
+dataBaseFile = "./database/database_dev.json"  # name and path to database
 curUser = ""  # current user name
 parameterUtil = parameterUtility()  # utility class object for parameter functions
 mode = ["AOO", "AAI", "VOO", "VVI", "AOOR",
@@ -29,6 +36,14 @@ egramData = {"time": [], "voltage": []}
 
 def getRealValue(value):
     return value.replace(" ", "").replace("\n", "")
+
+
+def checkValid(value):
+    if (value == ""):
+        return "Invalid name/password"
+    elif(" " in value):
+        return "Please avoid space in name/password"
+    return None
 
 # create the user in database
 
@@ -138,7 +153,16 @@ def getUpdatedParameters(values):
     return updated_parameters
 
 
+def draw_figure(canvas, figure):
+    figure_canvas_agg = FigureCanvasTkAgg(figure, canvas)
+    figure_canvas_agg.draw()
+    figure_canvas_agg.get_tk_widget().pack(side='top', fill='both', expand=1)
+    return figure_canvas_agg
+
+
 # get the window layout by state
+
+
 def getWindowByState():
     connection = [('\u2B24' + ' Disconnect', 'red'),
                   ('\u2B24' + ' Connect', 'green')]
@@ -167,9 +191,10 @@ def getWindowByState():
          sg.InputText(password_char='*', size=(sizeInput, 1))],
         [sg.Text('', size=(sizeText, 1)), sg.Text()],
         [sg.Button('Create New User')], [sg.Button('Back to Login')]]
+
     layoutEgram = [
         [sg.Text(infoMessage, text_color='red'), sg.Text()],
-        [sg.Text("Placeholder for egram")],
+        [sg.Canvas(key='-CANVAS-')],
         [sg.Button('Back to Parameters Screen')]
     ]
     sizeText = 30
@@ -266,7 +291,8 @@ def getWindowByState():
         window = sg.Window('PaceMaker', layoutCreateUser, resizable=True)
         return window
     elif (state == "egram"):
-        window = sg.Window('PaceMaker', layoutEgram, resizable=True)
+        window = sg.Window('PaceMaker', layoutEgram,
+                           resizable=True, finalize=True, )
         return window
 
 
@@ -279,11 +305,19 @@ if __name__ == '__main__':
         while True:
             window = getWindowByState()
 
+            if(state == "egram"):
+                fig = matplotlib.figure.Figure(
+                    figsize=(5, 4), dpi=100)
+                t = np.arange(0, 3, .01)
+                fig.add_subplot(111).plot(t, 2 * np.sin(2 * np.pi * t))
+                fig_agg = draw_figure(window['-CANVAS-'].TKCanvas, fig)
+                window.move(250, 250)  # need to update this
+
             event, values = window.read()
+
             if event == sg.WIN_CLOSED or event == 'Cancel':
                 window.close()
                 break
-
             if (logging):
                 print(state)
 
@@ -308,6 +342,10 @@ if __name__ == '__main__':
                 if (event == "Create New User"):
                     if (not (getRealValue(values[1]) == getRealValue(values[2]))):
                         infoMessage = "Password mismatch"
+                    elif (not checkValid(values[0]) == None):
+                        infoMessage = checkValid(values[0])
+                    elif (not checkValid(values[1]) == None):
+                        infoMessage = checkValid(values[1])
                     elif (users.get(getRealValue(values[0]))):
                         infoMessage = "User already exists"
                     else:

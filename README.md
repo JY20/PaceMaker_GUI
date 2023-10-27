@@ -17,6 +17,8 @@ Libraries:
 
 - PySimpleGUI==4.60.5
 - numpy==1.24.4
+- pyserial==3.5
+- matplotlib==3.2.2
 
 Note for Dev:
 

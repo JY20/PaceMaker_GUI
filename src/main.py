@@ -20,7 +20,7 @@ users = {}  # user dict
 logging = False  # logging for print statement for debugging
 state = "login"  # state of GUI
 curMode = ""  # mode for the user
-windowMode = "none"  # mode from events of the winodw GUI
+windowMode = "none"  # mode from events of the window GUI
 infoMessage = ""  # info message for users
 dataBaseFile = "./database/database_dev.json"  # name and path to database
 curUser = ""  # current user name
@@ -41,7 +41,7 @@ def getRealValue(value):
 def checkValid(value):
     if (value == ""):
         return "Invalid name/password"
-    elif(" " in value):
+    elif (" " in value):
         return "Please avoid space in name/password"
     return None
 
@@ -49,9 +49,9 @@ def checkValid(value):
 
 
 def createUserDB(name, password):
-    if(logging):
+    if (logging):
         print(str(len(users)+1)+"/"+str(maxUsers))
-    if(len(users)+1 <= maxUsers):
+    if (len(users)+1 <= maxUsers):
         value = {}
         value["name"] = name
         value["password"] = hashlib.sha256(
@@ -75,7 +75,7 @@ def createUserDB(name, password):
 
 
 def updateDataBaseFile():
-    if("src" not in os.getcwd()):
+    if ("src" not in os.getcwd()):
         newdataBaseFile = "./src/"+dataBaseFile.split("./")[1]
         return newdataBaseFile
     return dataBaseFile
@@ -127,28 +127,28 @@ def getUpdatedParameters(values):
     for parameter in parameterNamesCommon:
         updated_parameters[parameter] = values[count]
         count += 1
-    if("A" in curMode):
+    if ("A" in curMode):
         for parameter in parameterNamesA:
             updated_parameters[parameter] = values[count]
             count += 1
-    if("V" in curMode):
+    if ("V" in curMode):
         for parameter in parameterNamesV:
             updated_parameters[parameter] = values[count]
             count += 1
-    if("AI" in curMode):
+    if ("AI" in curMode):
         for parameter in parameterNamesAI:
             updated_parameters[parameter] = values[count]
             count += 1
-    if("VI" in curMode):
+    if ("VI" in curMode):
         for parameter in parameterNamesVI:
             updated_parameters[parameter] = values[count]
             count += 1
-    if("R" in curMode):
+    if ("R" in curMode):
         for parameter in parameterNamesR:
             updated_parameters[parameter] = values[count]
             count += 1
 
-    if(logging):
+    if (logging):
         print("For user: "+str(curUser)+" updating "+str(updated_parameters))
     return updated_parameters
 
@@ -270,20 +270,20 @@ def getWindowByState():
         window = sg.Window('PaceMaker', layoutLogin, resizable=True)
         return window
     elif (state == "control"):
-        if(logging):
+        if (logging):
             print(event)
         layoutControl = [layoutHeader]
-        if("A" in curMode):
+        if ("A" in curMode):
             layoutControl.append(layoutCommons)
             layoutControl.append(layoutA)
-        if("V" in curMode):
+        if ("V" in curMode):
             layoutControl.append(layoutCommons)
             layoutControl.append(layoutV)
-        if("AI" in curMode):
+        if ("AI" in curMode):
             layoutControl.append(layoutAI)
-        if("VI" in curMode):
+        if ("VI" in curMode):
             layoutControl.append(layoutVI)
-        if("R" in curMode):
+        if ("R" in curMode):
             layoutControl.append(layoutR)
         layoutControl.append(layoutFooter)
         return sg.Window('PaceMaker', layoutControl, resizable=True)
@@ -305,7 +305,7 @@ if __name__ == '__main__':
         while True:
             window = getWindowByState()
 
-            if(state == "egram"):
+            if (state == "egram"):
                 fig = matplotlib.figure.Figure(
                     figsize=(5, 4), dpi=100)
                 t = np.arange(0, 3, .01)
@@ -351,7 +351,7 @@ if __name__ == '__main__':
                     else:
                         if (logging):
                             print("Creating New User: "+values[0])
-                        if(createUserDB(getRealValue(
+                        if (createUserDB(getRealValue(
                                 values[0]), getRealValue(values[1]))):
                             infoMessage = "User successfully created"
                         else:
@@ -362,7 +362,7 @@ if __name__ == '__main__':
                     state = "login"
             elif (state == "control"):
                 windowMode = values['mode']
-                if(windowMode in mode):
+                if (windowMode in mode):
                     curMode = windowMode
                 if (logging):
                     print(event)
@@ -370,7 +370,7 @@ if __name__ == '__main__':
                 if (event == "Submit Parameters"):
                     newParameters = getUpdatedParameters(values)
                     check = parameterUtil.checkParameterInRange(newParameters)
-                    if(check == None):
+                    if (check == None):
                         users[curUser].updateParameters(newParameters)
                         users[curUser].setMode(curMode)
                         infoMessage = "Parameters Successfully Updated!"

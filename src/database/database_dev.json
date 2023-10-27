@@ -99,31 +99,6 @@
          "Rate Smoothing": 0
       }
    },
-   "Marko": {
-      "name": "Marko",
-      "password": "48cf6c91c1d1eb864e1d7d6d38e65e6c02249083aca96740ba82f2f123a18177",
-      "mode": "none",
-      "parameters": {
-         "Lower Rate Limit": 0,
-         "Upper Rate Limit": 0,
-         "Maximum Sensor Rate": 0,
-         "Activity Threshold": 0,
-         "Reaction Time": 0,
-         "Response Factor": 0,
-         "Recovery Time": 0,
-         "Atrial Amplitude": 0,
-         "Atrial Pulse Width": 0,
-         "Ventricular Amplitude": 0,
-         "Ventricular Pulse Width": 0,
-         "Atrial Sensitivity": 0,
-         "ARP": 0,
-         "PVARP": 0,
-         "Ventricular Sensitivity": 0,
-         "VRP": 0,
-         "Hysteresis": 0,
-         "Rate Smoothing": 0
-      }
-   },
    "Yan": {
       "name": "Yan",
       "password": "688787d8ff144c502c7f5cffaafe2cc588d86079f9de88304c26b0cb99ce91c6",
@@ -247,6 +222,31 @@
          "VRP": 10,
          "Hysteresis": 2,
          "Rate Smoothing": 3
+      }
+   },
+   "Marko": {
+      "name": "Marko",
+      "password": "48cf6c91c1d1eb864e1d7d6d38e65e6c02249083aca96740ba82f2f123a18177",
+      "mode": "VOOR",
+      "parameters": {
+         "Lower Rate Limit": 30,
+         "Upper Rate Limit": 120,
+         "Maximum Sensor Rate": 120,
+         "Activity Threshold": "Med-Low",
+         "Reaction Time": 30,
+         "Response Factor": 8,
+         "Recovery Time": 5,
+         "Atrial Amplitude": 3.5,
+         "Atrial Pulse Width": 0.4,
+         "Ventricular Amplitude": 3.0,
+         "Ventricular Pulse Width": 0.4,
+         "Atrial Sensitivity": 0.75,
+         "ARP": 250,
+         "PVARP": 250,
+         "Ventricular Sensitivity": 2.5,
+         "VRP": 250,
+         "Hysteresis": 0,
+         "Rate Smoothing": 0
       }
    }
 }

@@ -23,33 +23,33 @@ class parameterUtility:
                                'Hysteresis': 2, 'Rate Smoothing': 3}
         self.parameterValues = {}
         for parameter in self.parameterNames:
-            if(parameter == 'Lower Rate Limit'):
+            if (parameter == 'Lower Rate Limit'):
                 self.parameterValues[parameter] = [i for i in np.arange(
                     30, 50+5, 5)] + [i for i in np.arange(50, 90+1, 1)] + [i for i in np.arange(90, 175+5, 5)]
                 self.parameterValues[parameter] = np.round(
                     self.parameterValues[parameter], 2)
-            elif(parameter == 'Hysteresis'):
+            elif (parameter == 'Hysteresis'):
                 self.parameterValues[parameter] = [0]+[i for i in np.arange(
                     30, 50+5, 5)] + [i for i in np.arange(50, 90+1, 1)] + [i for i in np.arange(90, 175+5, 5)]
                 self.parameterValues[parameter] = np.round(
                     self.parameterValues[parameter], 2)
-            elif(parameter == 'Activity Threshold'):
+            elif (parameter == 'Activity Threshold'):
                 self.parameterValues[parameter] = ['V-Low', 'Low',
                                                    'Med-Low', 'Med', 'Med-High', 'High', 'V-High']
-            elif(parameter == 'Rate Smoothing'):
+            elif (parameter == 'Rate Smoothing'):
                 self.parameterValues[parameter] = [
                     0, 3, 6, 9, 12, 15, 18, 21, 25]
-            elif(parameter == 'Atrial Sensitivity' or parameter == 'Ventricular Sensitivity'):
+            elif (parameter == 'Atrial Sensitivity' or parameter == 'Ventricular Sensitivity'):
                 self.parameterValues[parameter] = [0.25, 0.5, 0.75] + [i for i in np.arange(
                     parameterLowerLimit[parameter], parameterUpperLimit[parameter]+parameterIncrements[parameter], parameterIncrements[parameter])]
                 self.parameterValues[parameter] = np.round(
                     self.parameterValues[parameter], 2)
-            elif(parameter == 'Atrial Pulse Width' or parameter == 'Ventricular Pulse Width'):
+            elif (parameter == 'Atrial Pulse Width' or parameter == 'Ventricular Pulse Width'):
                 self.parameterValues[parameter] = [0.05]+[i for i in np.arange(
                     parameterLowerLimit[parameter], parameterUpperLimit[parameter]+parameterIncrements[parameter], parameterIncrements[parameter])]
                 self.parameterValues[parameter] = np.round(
                     self.parameterValues[parameter], 2)
-            elif(parameter == 'Atrial Amplitude' or parameter == 'Ventricular Amplitude'):
+            elif (parameter == 'Atrial Amplitude' or parameter == 'Ventricular Amplitude'):
                 self.parameterValues[parameter] = [
                     0] + [i for i in np.arange(0.5, 3.2+0.1, 0.1)] + [i for i in np.arange(3.5, 7+0.5, 0.5)]
                 self.parameterValues[parameter] = np.round(
@@ -66,6 +66,10 @@ class parameterUtility:
 
     # get the parameter range values
     def getParameterRangeValues(self):
+        for parameter in self.parameterValues:
+            if (type(self.parameterValues[parameter]) == np.ndarray):
+                self.parameterValues[parameter] = self.parameterValues[parameter].tolist(
+                )
         return self.parameterValues
     # get the parameter names
 
@@ -79,9 +83,6 @@ class parameterUtility:
     # checks if parameter value is in range
     def checkParameterInRange(self, newParameterValues):
         for parameter in newParameterValues:
-            if(type(newParameterValues[parameter]) == str and newParameterValues[parameter] not in self.parameterValues['Activity Threshold']):
-                newParameterValues[parameter] = np.float64(
-                    newParameterValues[parameter])
-            if(newParameterValues[parameter] not in self.parameterValues[parameter]):
+            if (newParameterValues[parameter] not in self.parameterValues[parameter]):
                 return parameter
         return None

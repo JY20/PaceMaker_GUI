@@ -71,12 +71,12 @@ class parameterUtility:
                 self.parameterValues[parameter] = self.parameterValues[parameter].tolist(
                 )
         return self.parameterValues
-    # get the parameter names
 
+    # get the parameter names
     def getParameterNames(self):
         return self.parameterNames
-    # get the parameter nominals
 
+    # get the parameter nominals
     def getParameterNominals(self):
         return self.parameterNominals
 

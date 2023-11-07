@@ -6,6 +6,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib
 import time
 import threading
+import struct
 import numpy as np
 import json
 import hashlib
@@ -295,12 +296,25 @@ def getWindowByState():
         window = sg.Window('PaceMaker', layoutEgram,
                            resizable=True, finalize=True, )
         return window
-    
+
+
+""" Order of parameters:
+    'Mode', 'Lower Rate Limit', 'Upper Rate Limit', 'Maximum Sensor Rate', 'Activity Threshold', 'Reaction Time', 
+    'Response Factor', 'Recovery Time',
+    'Atrial Amplitude', 'Atrial Pulse Width', 'Ventricular Amplitude', 'Ventricular Pulse Width',
+    'Atrial Sensitivity', 'ARP', 'PVARP', 'Ventricular Sensitivity', 'VRP',
+    'Hysteresis', 'Rate Smoothing'
+    Format String: BBBBBBBBfffffhhffBB
+    """
+
+
 def serialWrite():
-    ser = serial.Serial('/dev/ttyUSB0') # open serial port
-    print(ser.name) # check which port was really used
-    ser.write(b'hello') # write a string
-    ser.close() # close port
+    parameters = users[curUser].getParameters()
+    ser = serial.Serial('COM3', 115200)  # open serial port
+    sendString = struct.pack(
+        'BB', parameters['Lower Rate Limit'], parameters['Upper Rate Limit'])
+    ser.write(sendString)  # write a string
+    ser.close()  # close port
 
 
 # main function to run GUI

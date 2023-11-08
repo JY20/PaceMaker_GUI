@@ -202,9 +202,9 @@
    "asd": {
       "name": "asd",
       "password": "688787d8ff144c502c7f5cffaafe2cc588d86079f9de88304c26b0cb99ce91c6",
-      "mode": "AAIR",
+      "mode": "AAI",
       "parameters": {
-         "Lower Rate Limit": 30,
+         "Lower Rate Limit": 35,
          "Upper Rate Limit": 50,
          "Maximum Sensor Rate": 50,
          "Activity Threshold": "Med-Low",
@@ -215,7 +215,7 @@
          "Atrial Pulse Width": 0.01,
          "Ventricular Amplitude": 0,
          "Ventricular Pulse Width": 0,
-         "Atrial Sensitivity": 0.25,
+         "Atrial Sensitivity": 5.0,
          "ARP": 160,
          "PVARP": 160,
          "Ventricular Sensitivity": 0,
@@ -224,29 +224,29 @@
          "Rate Smoothing": 3
       }
    },
-   "wer": {
-      "name": "wer",
-      "password": "e797c0013811a1d1e35ad7edd10fb99986db664b0996c76ed9ae5e0a5151bbf9",
+   "": {
+      "name": "",
+      "password": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "mode": "none",
       "parameters": {
-         "Lower Rate Limit": 2,
-         "Upper Rate Limit": 5,
-         "Maximum Sensor Rate": 5,
-         "Activity Threshold": 2,
-         "Reaction Time": 10,
-         "Response Factor": 1,
-         "Recovery Time": 1,
-         "Atrial Amplitude": 2,
-         "Atrial Pulse Width": 0.01,
-         "Ventricular Amplitude": 5,
-         "Ventricular Pulse Width": 0.01,
-         "Atrial Sensitivity": 0.5,
-         "ARP": 10,
-         "PVARP": 10,
-         "Ventricular Sensitivity": 0.5,
-         "VRP": 10,
-         "Hysteresis": 2,
-         "Rate Smoothing": 3
+         "Lower Rate Limit": 60,
+         "Upper Rate Limit": 120,
+         "Maximum Sensor Rate": 120,
+         "Activity Threshold": "Med",
+         "Reaction Time": 30,
+         "Response Factor": 8,
+         "Recovery Time": 5,
+         "Atrial Amplitude": 3.5,
+         "Atrial Pulse Width": 0.4,
+         "Ventricular Amplitude": 3.5,
+         "Ventricular Pulse Width": 0.4,
+         "Atrial Sensitivity": 0.75,
+         "ARP": 250,
+         "PVARP": 250,
+         "Ventricular Sensitivity": 2.5,
+         "VRP": 250,
+         "Hysteresis": 0,
+         "Rate Smoothing": 0
       }
    }
 }

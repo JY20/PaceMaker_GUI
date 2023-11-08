@@ -63,6 +63,10 @@ class parameterUtility:
                                   'Atrial Amplitude':  3.5, 'Atrial Pulse Width': 0.4, 'Ventricular Amplitude': 3.5, 'Ventricular Pulse Width': 0.4,
                                   'Atrial Sensitivity': 0.75, 'ARP': 250, 'PVARP': 250, 'Ventricular Sensitivity': 2.5, 'VRP': 250,
                                   'Hysteresis': 0, 'Rate Smoothing': 0}
+        
+        for parameter in self.parameterValues:
+            if (type(self.parameterValues[parameter]) == np.ndarray):
+                self.parameterValues[parameter] = self.parameterValues[parameter].tolist()
 
     # get the parameter range values
     def getParameterRangeValues(self):

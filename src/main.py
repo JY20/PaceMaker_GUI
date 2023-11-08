@@ -11,6 +11,8 @@ import json
 import hashlib
 import os
 import matplotlib
+import serial
+import struct
 matplotlib.use('TkAgg')
 
 
@@ -22,7 +24,7 @@ state = "login"  # state of GUI
 curMode = ""  # mode for the user
 windowMode = "none"  # mode from events of the winodw GUI
 infoMessage = ""  # info message for users
-dataBaseFile = "./database/database_dev.json"  # name and path to database
+dataBaseFile = "./database/database.json"  # name and path to database
 curUser = ""  # current user name
 parameterUtil = parameterUtility()  # utility class object for parameter functions
 mode = ["AOO", "AAI", "VOO", "VVI", "AOOR",
@@ -30,6 +32,24 @@ mode = ["AOO", "AAI", "VOO", "VVI", "AOOR",
 # dict for time and voltage list of egram data
 egramData = {"time": [], "voltage": []}
 
+
+def serialWrite():
+    ser=serial.Serial()
+    for ns in range(0, 101): 
+        try:
+            ser.port=str(ns)
+            ser.open()
+            print("COM"+str(ns+1)+" available")
+            ser.close()
+
+        except serial.SerialException:
+            print("COM"+str(ns+1)+" NOT available")
+    # parameters = users[curUser].getParameters()
+    # ser = serial.Serial('COM3', 115200)  # open serial port
+    # sendString = struct.pack(
+    #     'BB', parameters['Lower Rate Limit'], parameters['Upper Rate Limit'])
+    # ser.write(sendString)  # write a string
+    # ser.close()  # close port
 
 # remove the spaces and get the real value
 
@@ -298,7 +318,7 @@ def getWindowByState():
 
 # main function to run GUI
 if __name__ == '__main__':
-    try:
+    # try:
         dataBaseFile = updateDataBaseFile()
         sg.theme('LightGrey1')
 
@@ -376,6 +396,7 @@ if __name__ == '__main__':
                         infoMessage = "Parameters Successfully Updated!"
                         updateDatabase()
                         getAllUsers()
+                        serialWrite()
                     else:
                         infoMessage = "Double check the value entered are in range for parameter: " + \
                             str(check)
@@ -391,7 +412,7 @@ if __name__ == '__main__':
                     infoMessage = "Welcome to Control Panel for: " + curUser
             window.close()
         window.close()
-    except Exception as e:
-        window.close()
-        sg.popup_error_with_traceback(
-            "An error had occured. Please contact the support team with the following info: ", e)
+    # except Exception as e:
+    #     window.close()
+    #     sg.popup_error_with_traceback(
+    #         "An error had occured. Please contact the support team with the following info: ", e)

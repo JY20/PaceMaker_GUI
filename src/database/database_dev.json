@@ -21,7 +21,16 @@
          "Ventricular Sensitivity": 0,
          "VRP": 0,
          "Hysteresis": 0,
-         "Rate Smoothing": 0
+         "Rate Smoothing": 0,
+         "Fixed AV delay": 150,
+         "Dynamic AV delay": "Off",
+         "Minimum Dynamic AV delay": 50,
+         "Sensed AV delay offset": 0,
+         "PVARP Extension": 0,
+         "ATR Mode": "Off",
+         "ATR Duration": 20,
+         "ATR Fallback Time": 1,
+         "Ventricular Blanking": 40
       }
    },
    "Jimmy": {
@@ -46,7 +55,16 @@
          "Ventricular Sensitivity": 0.75,
          "VRP": 160,
          "Hysteresis": 35,
-         "Rate Smoothing": 6
+         "Rate Smoothing": 6,
+         "Fixed AV delay": 150,
+         "Dynamic AV delay": "Off",
+         "Minimum Dynamic AV delay": 50,
+         "Sensed AV delay offset": 0,
+         "PVARP Extension": 0,
+         "ATR Mode": "Off",
+         "ATR Duration": 20,
+         "ATR Fallback Time": 1,
+         "Ventricular Blanking": 40
       }
    },
    "Haashim": {
@@ -71,7 +89,16 @@
          "Ventricular Sensitivity": 0,
          "VRP": 0,
          "Hysteresis": 0,
-         "Rate Smoothing": 0
+         "Rate Smoothing": 0,
+         "Fixed AV delay": 150,
+         "Dynamic AV delay": "Off",
+         "Minimum Dynamic AV delay": 50,
+         "Sensed AV delay offset": 0,
+         "PVARP Extension": 0,
+         "ATR Mode": "Off",
+         "ATR Duration": 20,
+         "ATR Fallback Time": 1,
+         "Ventricular Blanking": 40
       }
    },
    "Bob": {
@@ -96,7 +123,16 @@
          "Ventricular Sensitivity": 0,
          "VRP": 0,
          "Hysteresis": 0,
-         "Rate Smoothing": 0
+         "Rate Smoothing": 0,
+         "Fixed AV delay": 150,
+         "Dynamic AV delay": "Off",
+         "Minimum Dynamic AV delay": 50,
+         "Sensed AV delay offset": 0,
+         "PVARP Extension": 0,
+         "ATR Mode": "Off",
+         "ATR Duration": 20,
+         "ATR Fallback Time": 1,
+         "Ventricular Blanking": 40
       }
    },
    "Marko": {
@@ -121,7 +157,16 @@
          "Ventricular Sensitivity": 0,
          "VRP": 0,
          "Hysteresis": 0,
-         "Rate Smoothing": 0
+         "Rate Smoothing": 0,
+         "Fixed AV delay": 150,
+         "Dynamic AV delay": "Off",
+         "Minimum Dynamic AV delay": 50,
+         "Sensed AV delay offset": 0,
+         "PVARP Extension": 0,
+         "ATR Mode": "Off",
+         "ATR Duration": 20,
+         "ATR Fallback Time": 1,
+         "Ventricular Blanking": 40
       }
    },
    "Yan": {
@@ -146,7 +191,16 @@
          "Ventricular Sensitivity": 0,
          "VRP": 0,
          "Hysteresis": 0,
-         "Rate Smoothing": 0
+         "Rate Smoothing": 0,
+         "Fixed AV delay": 150,
+         "Dynamic AV delay": "Off",
+         "Minimum Dynamic AV delay": 50,
+         "Sensed AV delay offset": 0,
+         "PVARP Extension": 0,
+         "ATR Mode": "Off",
+         "ATR Duration": 20,
+         "ATR Fallback Time": 1,
+         "Ventricular Blanking": 40
       }
    },
    "Harry": {
@@ -171,63 +225,22 @@
          "Ventricular Sensitivity": 0,
          "VRP": 0,
          "Hysteresis": 0,
-         "Rate Smoothing": 0
-      }
-   },
-   "Jim": {
-      "name": "Jim",
-      "password": "e797c0013811a1d1e35ad7edd10fb99986db664b0996c76ed9ae5e0a5151bbf9",
-      "mode": "none",
-      "parameters": {
-         "Lower Rate Limit": 0,
-         "Upper Rate Limit": 0,
-         "Maximum Sensor Rate": 0,
-         "Activity Threshold": 0,
-         "Reaction Time": 0,
-         "Response Factor": 0,
-         "Recovery Time": 0,
-         "Atrial Amplitude": 0,
-         "Atrial Pulse Width": 0,
-         "Ventricular Amplitude": 0,
-         "Ventricular Pulse Width": 0,
-         "Atrial Sensitivity": 0,
-         "ARP": 0,
-         "PVARP": 0,
-         "Ventricular Sensitivity": 0,
-         "VRP": 0,
-         "Hysteresis": 0,
-         "Rate Smoothing": 0
+         "Rate Smoothing": 0,
+         "Fixed AV delay": 150,
+         "Dynamic AV delay": "Off",
+         "Minimum Dynamic AV delay": 50,
+         "Sensed AV delay offset": 0,
+         "PVARP Extension": 0,
+         "ATR Mode": "Off",
+         "ATR Duration": 20,
+         "ATR Fallback Time": 1,
+         "Ventricular Blanking": 40
       }
    },
    "asd": {
       "name": "asd",
       "password": "688787d8ff144c502c7f5cffaafe2cc588d86079f9de88304c26b0cb99ce91c6",
-      "mode": "AAI",
-      "parameters": {
-         "Lower Rate Limit": 35,
-         "Upper Rate Limit": 50,
-         "Maximum Sensor Rate": 50,
-         "Activity Threshold": "Med-Low",
-         "Reaction Time": 20,
-         "Response Factor": 1,
-         "Recovery Time": 2,
-         "Atrial Amplitude": 0.5,
-         "Atrial Pulse Width": 0.01,
-         "Ventricular Amplitude": 0,
-         "Ventricular Pulse Width": 0,
-         "Atrial Sensitivity": 5.0,
-         "ARP": 160,
-         "PVARP": 160,
-         "Ventricular Sensitivity": 0,
-         "VRP": 0,
-         "Hysteresis": 30,
-         "Rate Smoothing": 3
-      }
-   },
-   "": {
-      "name": "",
-      "password": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "mode": "none",
+      "mode": "AOOR",
       "parameters": {
          "Lower Rate Limit": 60,
          "Upper Rate Limit": 120,
@@ -236,17 +249,26 @@
          "Reaction Time": 30,
          "Response Factor": 8,
          "Recovery Time": 5,
-         "Atrial Amplitude": 3.5,
-         "Atrial Pulse Width": 0.4,
-         "Ventricular Amplitude": 3.5,
-         "Ventricular Pulse Width": 0.4,
-         "Atrial Sensitivity": 0.75,
+         "Atrial Amplitude": 5.0,
+         "Atrial Pulse Width": 1,
+         "Ventricular Amplitude": 5,
+         "Ventricular Pulse Width": 1,
+         "Atrial Sensitivity": 0.0,
          "ARP": 250,
          "PVARP": 250,
-         "Ventricular Sensitivity": 2.5,
+         "Ventricular Sensitivity": 0,
          "VRP": 250,
          "Hysteresis": 0,
-         "Rate Smoothing": 0
+         "Rate Smoothing": 0,
+         "Fixed AV delay": 150,
+         "Dynamic AV delay": "Off",
+         "Minimum Dynamic AV delay": 50,
+         "Sensed AV delay offset": 0,
+         "PVARP Extension": 0,
+         "ATR Mode": "Off",
+         "ATR Duration": 20,
+         "ATR Fallback Time": 1,
+         "Ventricular Blanking": 40
       }
    }
 }

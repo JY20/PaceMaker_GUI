@@ -42,9 +42,10 @@ class User:
     # get json format of user variables
     def getJson(self):
         parameterNames = ['Lower Rate Limit', 'Upper Rate Limit', 'Maximum Sensor Rate', 'Activity Threshold', 'Reaction Time', 'Response Factor', 'Recovery Time',
-                          'Atrial Amplitude', 'Atrial Pulse Width', 'Ventricular Amplitude', 'Ventricular Pulse Width',
-                          'Atrial Sensitivity', 'ARP', 'PVARP', 'Ventricular Sensitivity', 'VRP',
-                          'Hysteresis', 'Rate Smoothing']
+                               'Atrial Amplitude', 'Atrial Pulse Width', 'Ventricular Amplitude', 'Ventricular Pulse Width',
+                               'Atrial Sensitivity', 'ARP', 'PVARP', 'Ventricular Sensitivity', 'VRP',
+                               'Hysteresis', 'Rate Smoothing', 'Fixed AV delay', 'Dynamic AV delay','Minimum Dynamic AV delay', 
+                               'Sensed AV delay offset', 'PVARP Extension', 'ATR Mode', 'ATR Duration','ATR Fallback Time', 'Ventricular Blanking']
         value = {}
         value["name"] = self.name
         value["password"] = self.password

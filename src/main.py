@@ -28,7 +28,7 @@ dataBaseFile = "./database/database.json"  # name and path to database
 curUser = ""  # current user name
 parameterUtil = parameterUtility()  # utility class object for parameter functions
 mode = ["AOO", "AAI", "VOO", "VVI", "AOOR",
-        "AAIR", "VOOR", "VVIR"]  # list of modes
+        "AAIR", "VOOR", "VVIR", "DDDR"]  # list of modes
 # dict for time and voltage list of egram data
 egramData = {"time": [], "voltage": []}
 
@@ -235,31 +235,29 @@ def getWindowByState():
         parameterValues = parameterUtil.getParameterRangeValues()
         layoutCommons = [
             [sg.Text('Lower Rate Limit (ppm)', size=(sizeText, 1)),
-             sg.Spin(parameterValues['Lower Rate Limit'], initial_value=parameters['Lower Rate Limit'], readonly=False,  size=sizeText2)],
-            [sg.Text('Upper Rate Limit (ppm)', size=(sizeText, 1)),
+             sg.Spin(parameterValues['Lower Rate Limit'], initial_value=parameters['Lower Rate Limit'], readonly=False,  size=sizeText2),
+            sg.Text('Upper Rate Limit (ppm)', size=(sizeText, 1)),
              sg.Spin(values=parameterValues['Upper Rate Limit'], initial_value=parameters['Upper Rate Limit'], readonly=False,  size=sizeText2)],
         ]
         layoutR = [[sg.Text('Maximum Sensor Rate (ppm)', size=(sizeText, 1)),
-                    sg.Spin(values=parameterValues['Maximum Sensor Rate'], initial_value=parameters['Maximum Sensor Rate'], readonly=False,  size=sizeText2)],
-                   [sg.Text('Activity Threshold', size=(sizeText, 1)),
+                    sg.Spin(values=parameterValues['Maximum Sensor Rate'], initial_value=parameters['Maximum Sensor Rate'], readonly=False,  size=sizeText2),
+                    sg.Text('Activity Threshold', size=(sizeText, 1)),
                     sg.Spin(values=parameterValues['Activity Threshold'], initial_value=parameters['Activity Threshold'], readonly=False,  size=sizeText2)],
-                   [sg.Text('Reaction Time (sec)', size=(sizeText, 1)),
-                    sg.Spin(values=parameterValues['Reaction Time'], initial_value=parameters['Reaction Time'], readonly=False,  size=sizeText2)],
-                   [sg.Text('Response Factor', size=(sizeText, 1)),
-                    sg.Spin(values=parameterValues['Response Factor'], initial_value=parameters['Response Factor'], readonly=False,  size=sizeText2)],
-                   [sg.Text('Recovery Time (min)', size=(sizeText, 1)),
+                    [sg.Text('Reaction Time (sec)', size=(sizeText, 1)),
+                    sg.Spin(values=parameterValues['Reaction Time'], initial_value=parameters['Reaction Time'], readonly=False,  size=sizeText2),
+                    sg.Text('Response Factor', size=(sizeText, 1)),
+                    sg.Spin(values=parameterValues['Response Factor'], initial_value=parameters['Response Factor'], readonly=False,  size=sizeText2)], 
+                    [sg.Text('Recovery Time (min)', size=(sizeText, 1)),
                     sg.Spin(values=parameterValues['Recovery Time'], initial_value=parameters['Recovery Time'], readonly=False,  size=sizeText2)],
                    ]
         layoutA = [
             [sg.Text('Atrial Amplitude', size=(sizeText, 1)),
-             sg.Spin(values=parameterValues['Atrial Amplitude'], initial_value=parameters['Atrial Amplitude'], readonly=False,  size=sizeText2)],
-            [sg.Text('Atrial Pulse Width (ms)', size=(sizeText, 1)),
+             sg.Spin(values=parameterValues['Atrial Amplitude'], initial_value=parameters['Atrial Amplitude'], readonly=False,  size=sizeText2), sg.Text('Atrial Pulse Width (ms)', size=(sizeText, 1)),
              sg.Spin(values=parameterValues['Atrial Pulse Width'], initial_value=parameters['Atrial Pulse Width'], readonly=False,  size=sizeText2)],
         ]
         layoutV = [
             [sg.Text('Ventricular Amplitude', size=(sizeText, 1)),
-             sg.Spin(values=parameterValues['Ventricular Amplitude'], initial_value=parameters['Ventricular Amplitude'], readonly=False,  size=sizeText2)],
-            [sg.Text('Ventricular Pulse Width (ms)', size=(sizeText, 1)),
+             sg.Spin(values=parameterValues['Ventricular Amplitude'], initial_value=parameters['Ventricular Amplitude'], readonly=False,  size=sizeText2), sg.Text('Ventricular Pulse Width (ms)', size=(sizeText, 1)),
              sg.Spin(values=parameterValues['Ventricular Pulse Width'], initial_value=parameters['Ventricular Pulse Width'], readonly=False,  size=sizeText2)],
         ]
         layoutAI = [
@@ -284,6 +282,32 @@ def getWindowByState():
             [sg.Text('Rate Smoothing (%)', size=(sizeText, 1)),
              sg.Spin(values=parameterValues['Rate Smoothing'], initial_value=parameters['Rate Smoothing'], readonly=False,  size=sizeText2)],
         ]
+        layoutDDDRextra = [
+            [sg.Text('Atrial Sensitivity (mV)', size=(sizeText, 1)),
+             sg.Spin(values=parameterValues['Atrial Sensitivity'], initial_value=parameters['Atrial Sensitivity'], readonly=False,  size=sizeText2),
+             sg.Text('ARP (ms)', size=(sizeText, 1)), sg.Spin(
+                values=parameterValues['ARP'], initial_value=parameters['ARP'], readonly=False,  size=sizeText2)],
+            [sg.Text('PVARP (ms)', size=(sizeText, 1)), sg.Spin(
+                values=parameterValues['PVARP'], initial_value=parameters['PVARP'], readonly=False,  size=sizeText2),
+             sg.Text('Ventricular Sensitivity (mV)', size=(sizeText, 1)),
+             sg.Spin(values=parameterValues['Ventricular Sensitivity'], initial_value=parameters['Ventricular Sensitivity'], readonly=False,  size=sizeText2)],
+            [sg.Text('VRP (ms)', size=(sizeText, 1)), sg.Spin(
+                values=parameterValues['VRP'], initial_value=parameters['VRP'], readonly=False,  size=sizeText2)],
+            [sg.Text('Hysteresis (ppm)', size=(sizeText, 1)),
+             sg.Spin(values=parameterValues['Hysteresis'], initial_value=parameters['Hysteresis'], readonly=False,  size=sizeText2)],
+            [sg.Text('Rate Smoothing (%)', size=(sizeText, 1)),
+             sg.Spin(values=parameterValues['Rate Smoothing'], initial_value=parameters['Rate Smoothing'], readonly=False,  size=sizeText2)],
+
+            [sg.Text('Fixed AV delay ()', size=(sizeText, 1)),sg.Spin(values=parameterValues['Fixed AV delay'], initial_value=parameters['Fixed AV delay'], readonly=False,  size=sizeText2), 
+             sg.Text('Dynamic AV delay', size=(sizeText, 1)),sg.Spin(values=parameterValues['Dynamic AV delay'], initial_value=parameters['Dynamic AV delay'], readonly=False,  size=sizeText2)],
+            [sg.Text('Minimum Dynamic AV delay', size=(sizeText, 1)),sg.Spin(values=parameterValues['Minimum Dynamic AV delay'], initial_value=parameters['Minimum Dynamic AV delay'], readonly=False,  size=sizeText2), 
+             sg.Text('Sensed AV delay offset', size=(sizeText, 1)),sg.Spin(values=parameterValues['Sensed AV delay offset'], initial_value=parameters['Sensed AV delay offset'], readonly=False,  size=sizeText2)],
+            [sg.Text('PVARP Extension', size=(sizeText, 1)),sg.Spin(values=parameterValues['PVARP Extension'], initial_value=parameters['PVARP Extension'], readonly=False,  size=sizeText2),
+             sg.Text('ATR Mode', size=(sizeText, 1)),sg.Spin(values=parameterValues['ATR Mode'], initial_value=parameters['ATR Mode'], readonly=False,  size=sizeText2)], 
+            [sg.Text('ATR Duration', size=(sizeText, 1)),sg.Spin(values=parameterValues['ATR Duration'], initial_value=parameters['ATR Duration'], readonly=False,  size=sizeText2),
+            sg.Text('ATR Fallback Time', size=(sizeText, 1)),sg.Spin(values=parameterValues['ATR Fallback Time'], initial_value=parameters['ATR Fallback Time'], readonly=False,  size=sizeText2)],
+            [sg.Text('Ventricular Blanking', size=(sizeText, 1)),sg.Spin(values=parameterValues['Ventricular Blanking'], initial_value=parameters['Ventricular Blanking'], readonly=False,  size=sizeText2)],
+        ]
         layoutFooter = [[sg.Button('Submit Parameters')],
                         [sg.Button('Log Off')]]
     if (state == "login"):
@@ -305,6 +329,8 @@ def getWindowByState():
             layoutControl.append(layoutVI)
         if("R" in curMode):
             layoutControl.append(layoutR)
+        if("DDDR" in curMode):
+            layoutControl = [layoutHeader,layoutCommons, layoutA, layoutV, layoutR]
         layoutControl.append(layoutFooter)
         return sg.Window('PaceMaker', layoutControl, resizable=True)
     elif (state == "createUser"):

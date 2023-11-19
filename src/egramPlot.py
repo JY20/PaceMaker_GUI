@@ -21,7 +21,7 @@ class updateable_matplotlib_plot():
             self.figure = plt.figure()
             self.axes = self.figure.add_subplot(111)
             self.line, = self.axes.plot(self.data)
-            self.axes.set_title("Example of a Matplotlib plot updating in PySimpleGUI")
+            self.axes.set_title("Egram Data")
         #all other runs
         else:            
             self.line.set_ydata(self.data)#update data            

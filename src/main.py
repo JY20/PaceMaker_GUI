@@ -161,9 +161,10 @@ def getUpdatedParameters(values):
                       'Sensed AV delay offset', 'PVARP Extension','ATR Mode','ATR Duration', 'ATR Fallback Time', 'Ventricular Blanking']
     count = 0
     updated_parameters = {}
-    for parameter in parameterNamesCommon:
-        updated_parameters[parameter] = values[count]
-        count += 1
+    if(curMode != "none"):
+        for parameter in parameterNamesCommon:
+            updated_parameters[parameter] = values[count]
+            count += 1
     if("A" in curMode or "DDDR" in curMode):
         for parameter in parameterNamesA:
             updated_parameters[parameter] = values[count]
@@ -232,12 +233,6 @@ def getWindowByState():
          sg.InputText(password_char='*', size=(sizeInput, 1))],
         [sg.Text('', size=(sizeText, 1)), sg.Text()],
         [sg.Button('Create New User')], [sg.Button('Back to Login')]]
-
-    layoutEgram = [
-        [sg.Text(infoMessage, text_color='red'), sg.Text()],
-        [sg.Canvas(key='-CANVAS-')],
-        [sg.Button('Back to Parameters Screen')]
-    ]
 
     layoutEgram = [
         [sg.Canvas(size=(500,500), key='canvas')],
@@ -339,8 +334,7 @@ def getWindowByState():
         layoutFooter = [[sg.Button('Submit Parameters')],
                         [sg.Button('Log Off')]]
     if (state == "login"):
-        window = sg.Window('PaceMaker', layoutLogin, resizable=True)
-        return window
+        return sg.Window('PaceMaker', layoutLogin, resizable=True)
     elif (state == "control"):
         if(logging):
             print(event)
@@ -373,38 +367,31 @@ def getWindowByState():
         layoutControl.append(layoutFooter)
         return sg.Window('PaceMaker', layoutControl, resizable=True)
     elif (state == "createUser"):
-        window = sg.Window('PaceMaker', layoutCreateUser, resizable=True)
-        return window
+        return sg.Window('PaceMaker', layoutCreateUser, resizable=True)
     elif (state == "egram"):
-        window = sg.Window('PaceMaker', layoutEgram,
+        return sg.Window('PaceMaker', layoutEgram,
                            resizable=True, finalize=True)
-        return window
 
 # main function to run GUI
 if __name__ == '__main__':
     # try:
         dataBaseFile = updateDataBaseFile()
         sg.theme('LightGrey1')
+        window = getWindowByState()
 
         while True: 
-            window = getWindowByState()
-
-            if(state == "egram"):
-                spectraPlot = updateable_matplotlib_plot(window['canvas'])
-                window.finalize()
-                spectraPlot.plot(np.zeros(1024)) 
-
             event, values = window.read()
+
             if event == sg.WIN_CLOSED or event == 'Cancel':
                 window.close()
                 break
             if (logging):
                 print(state) 
+                print(event)
+                print(values)
             if (state == "login"):
                 getAllUsers()
                 if (event == "Login"):
-                    if (True):
-                        print(values)
                     if (users.get(getRealValue(values[0])) and users[getRealValue(values[0])].checkCredential(getRealValue(values[0]), getRealValue(values[1]))):
                         infoMessage = ""
                         state = "control"
@@ -412,11 +399,17 @@ if __name__ == '__main__':
                         infoMessage = "Welcome to Control Panel for: " + curUser
                         windowMode = users[getRealValue(values[0])].getMode()
                         curMode = users[getRealValue(values[0])].getMode()
+                        window.close()
+                        window = getWindowByState()
                     else:
                         infoMessage = "Password Incorrect or this user does not exist"
+                        window.close()
+                        window = getWindowByState()
                 elif (event == "Create New User"):
                     infoMessage = ""
                     state = "createUser"
+                    window.close()
+                    window = getWindowByState()
             elif (state == "createUser"):
                 if (event == "Create New User"):
                     if (not (getRealValue(values[1]) == getRealValue(values[2]))):
@@ -437,12 +430,13 @@ if __name__ == '__main__':
                             infoMessage = "System had reached to max number of users. Please contact support team for help"
 
                         state = "login"
+                    window.close()
+                    window = getWindowByState()
                 elif (event == "Back to Login"):
                     state = "login"
+                    window.close()
+                    window = getWindowByState()
             elif (state == "control"):
-                if (logging):
-                    print(event)
-                    print(values)
                 windowMode = values['mode']
                 if(windowMode in mode):
                     curMode = windowMode
@@ -459,12 +453,21 @@ if __name__ == '__main__':
                     else:
                         infoMessage = "Double check the value entered are in range for parameter: " + \
                             str(check)
+                    window.close()
+                    window = getWindowByState()
                 if (event == "View Egram"):
                     state = "egram"
                     infoMessage = ""
+                    window.close()
+                    window = getWindowByState()
+                    spectraPlot = updateable_matplotlib_plot(window['canvas'])
+                    window.finalize()
+                    spectraPlot.plot(np.zeros(1024)) 
                 if (event == "Log Off"):
                     state = "login"
                     infoMessage = "Successful log off"
+                    window.close()
+                    window = getWindowByState()
             elif (state == "egram"):
                 if event == "update":
                     some_spectrum = np.random.random(1024) # data to be plotted
@@ -472,7 +475,8 @@ if __name__ == '__main__':
                 if (event == "Back to Parameters Screen"):
                     state = "control"
                     infoMessage = "Welcome to Control Panel for: " + curUser
-            window.close()
+                    window.close()
+                    window = getWindowByState()
         window.close()
     # except Exception as e:
     #     window.close()

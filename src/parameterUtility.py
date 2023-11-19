@@ -24,7 +24,7 @@ class parameterUtility:
                                'Atrial Amplitude':  0.1, 'Atrial Pulse Width': 1, 'Ventricular Amplitude': 0.1, 'Ventricular Pulse Width': 1,
                                'Atrial Sensitivity': 0.1, 'ARP': 10, 'PVARP': 10, 'Ventricular Sensitivity': 0.1, 'VRP': 10,
                                'Hysteresis': 2, 'Rate Smoothing': 3,'Fixed AV delay':10, 'Dynamic AV delay':1,'Minimum Dynamic AV delay':10, 
-                               'Sensed AV delay offset':-10, 'PVARP Extension':50, 'ATR Mode':1, 'ATR Duration':1,'ATR Fallback Time':1, 'Ventricular Blanking':10}
+                               'Sensed AV delay offset':10, 'PVARP Extension':50, 'ATR Mode':1, 'ATR Duration':1,'ATR Fallback Time':1, 'Ventricular Blanking':10}
         self.parameterValues = {}
         for parameter in self.parameterNames:
             if(parameter == 'Lower Rate Limit'):
@@ -78,9 +78,6 @@ class parameterUtility:
     # checks if parameter value is in range
     def checkParameterInRange(self, newParameterValues):
         for parameter in newParameterValues:
-            if(type(newParameterValues[parameter]) == str and newParameterValues[parameter] not in self.parameterValues['Activity Threshold']):
-                newParameterValues[parameter] = np.float64(
-                    newParameterValues[parameter])
             if(newParameterValues[parameter] not in self.parameterValues[parameter]):
                 print(newParameterValues)
                 print(self.parameterValues[parameter])

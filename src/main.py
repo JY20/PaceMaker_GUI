@@ -1,5 +1,6 @@
 from parameterUtility import parameterUtility
 from User import User
+from egramPlot import updateable_matplotlib_plot
 import matplotlib.pyplot as plt
 import PySimpleGUI as sg
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -24,13 +25,14 @@ state = "login"  # state of GUI
 curMode = ""  # mode for the user
 windowMode = "none"  # mode from events of the winodw GUI
 infoMessage = ""  # info message for users
-dataBaseFile = "./database/database.json"  # name and path to database
+dataBaseFile = "./database/database_dev.json"  # name and path to database
 curUser = ""  # current user name
 parameterUtil = parameterUtility()  # utility class object for parameter functions
 mode = ["AOO", "AAI", "VOO", "VVI", "AOOR",
         "AAIR", "VOOR", "VVIR", "DDDR"]  # list of modes
 # dict for time and voltage list of egram data
 egramData = {"time": [], "voltage": []}
+tempCounter = 0
 
 
 def serialWrite():
@@ -57,6 +59,18 @@ def serialWrite():
 def getRealValue(value):
     return value.replace(" ", "").replace("\n", "")
 
+def getEgramData():
+    print("into function")
+    f = open("sampleData.csv", "r")
+    value = f.read()
+    points = value.split("\n")
+    for point in points:
+        data = point.split(",")
+        egramData['time'].append(data[2])
+        egramData['voltage'].append(data[0])
+        # print(data)
+    # print(value)
+    f.close()
 
 def checkValid(value):
     if (value == ""):
@@ -142,16 +156,19 @@ def getUpdatedParameters(values):
                         'VRP', 'Hysteresis', 'Rate Smoothing']
     parameterNamesR = ['Maximum Sensor Rate', 'Activity Threshold',
                        'Reaction Time', 'Response Factor', 'Recovery Time']
+    parameterNamesDDDRextra = ['Atrial Sensitivity', 'ARP', 'PVARP', 'Ventricular Sensitivity','VRP','Hysteresis',
+                      'Rate Smoothing', 'Fixed AV delay', 'Dynamic AV delay', 'Minimum Dynamic AV delay',
+                      'Sensed AV delay offset', 'PVARP Extension','ATR Mode','ATR Duration', 'ATR Fallback Time', 'Ventricular Blanking']
     count = 0
     updated_parameters = {}
     for parameter in parameterNamesCommon:
         updated_parameters[parameter] = values[count]
         count += 1
-    if("A" in curMode):
+    if("A" in curMode or "DDDR" in curMode):
         for parameter in parameterNamesA:
             updated_parameters[parameter] = values[count]
             count += 1
-    if("V" in curMode):
+    if("V" in curMode or "DDDR" in curMode):
         for parameter in parameterNamesV:
             updated_parameters[parameter] = values[count]
             count += 1
@@ -163,8 +180,12 @@ def getUpdatedParameters(values):
         for parameter in parameterNamesVI:
             updated_parameters[parameter] = values[count]
             count += 1
-    if("R" in curMode):
+    if("R" in curMode or "DDDR" in curMode):
         for parameter in parameterNamesR:
+            updated_parameters[parameter] = values[count]
+            count += 1
+    if("DDDR" in curMode):
+        for parameter in parameterNamesDDDRextra:
             updated_parameters[parameter] = values[count]
             count += 1
 
@@ -217,6 +238,12 @@ def getWindowByState():
         [sg.Canvas(key='-CANVAS-')],
         [sg.Button('Back to Parameters Screen')]
     ]
+
+    layoutEgram = [
+        [sg.Canvas(size=(500,500), key='canvas')],
+        [sg.Button('Back to Parameters Screen'),sg.Button('Update', key='update')]
+    ]
+
     sizeText = 30
     sizeText2 = 15
     if (state == "control"):
@@ -235,29 +262,31 @@ def getWindowByState():
         parameterValues = parameterUtil.getParameterRangeValues()
         layoutCommons = [
             [sg.Text('Lower Rate Limit (ppm)', size=(sizeText, 1)),
-             sg.Spin(parameterValues['Lower Rate Limit'], initial_value=parameters['Lower Rate Limit'], readonly=False,  size=sizeText2),
-            sg.Text('Upper Rate Limit (ppm)', size=(sizeText, 1)),
+             sg.Spin(parameterValues['Lower Rate Limit'], initial_value=parameters['Lower Rate Limit'], readonly=False,  size=sizeText2)],
+            [sg.Text('Upper Rate Limit (ppm)', size=(sizeText, 1)),
              sg.Spin(values=parameterValues['Upper Rate Limit'], initial_value=parameters['Upper Rate Limit'], readonly=False,  size=sizeText2)],
         ]
         layoutR = [[sg.Text('Maximum Sensor Rate (ppm)', size=(sizeText, 1)),
-                    sg.Spin(values=parameterValues['Maximum Sensor Rate'], initial_value=parameters['Maximum Sensor Rate'], readonly=False,  size=sizeText2),
-                    sg.Text('Activity Threshold', size=(sizeText, 1)),
+                    sg.Spin(values=parameterValues['Maximum Sensor Rate'], initial_value=parameters['Maximum Sensor Rate'], readonly=False,  size=sizeText2)],
+                    [sg.Text('Activity Threshold', size=(sizeText, 1)),
                     sg.Spin(values=parameterValues['Activity Threshold'], initial_value=parameters['Activity Threshold'], readonly=False,  size=sizeText2)],
                     [sg.Text('Reaction Time (sec)', size=(sizeText, 1)),
-                    sg.Spin(values=parameterValues['Reaction Time'], initial_value=parameters['Reaction Time'], readonly=False,  size=sizeText2),
-                    sg.Text('Response Factor', size=(sizeText, 1)),
+                    sg.Spin(values=parameterValues['Reaction Time'], initial_value=parameters['Reaction Time'], readonly=False,  size=sizeText2)],
+                    [sg.Text('Response Factor', size=(sizeText, 1)),
                     sg.Spin(values=parameterValues['Response Factor'], initial_value=parameters['Response Factor'], readonly=False,  size=sizeText2)], 
                     [sg.Text('Recovery Time (min)', size=(sizeText, 1)),
                     sg.Spin(values=parameterValues['Recovery Time'], initial_value=parameters['Recovery Time'], readonly=False,  size=sizeText2)],
                    ]
         layoutA = [
             [sg.Text('Atrial Amplitude', size=(sizeText, 1)),
-             sg.Spin(values=parameterValues['Atrial Amplitude'], initial_value=parameters['Atrial Amplitude'], readonly=False,  size=sizeText2), sg.Text('Atrial Pulse Width (ms)', size=(sizeText, 1)),
+             sg.Spin(values=parameterValues['Atrial Amplitude'], initial_value=parameters['Atrial Amplitude'], readonly=False,  size=sizeText2)], 
+             [sg.Text('Atrial Pulse Width (ms)', size=(sizeText, 1)),
              sg.Spin(values=parameterValues['Atrial Pulse Width'], initial_value=parameters['Atrial Pulse Width'], readonly=False,  size=sizeText2)],
         ]
         layoutV = [
             [sg.Text('Ventricular Amplitude', size=(sizeText, 1)),
-             sg.Spin(values=parameterValues['Ventricular Amplitude'], initial_value=parameters['Ventricular Amplitude'], readonly=False,  size=sizeText2), sg.Text('Ventricular Pulse Width (ms)', size=(sizeText, 1)),
+             sg.Spin(values=parameterValues['Ventricular Amplitude'], initial_value=parameters['Ventricular Amplitude'], readonly=False,  size=sizeText2)], 
+             [sg.Text('Ventricular Pulse Width (ms)', size=(sizeText, 1)),
              sg.Spin(values=parameterValues['Ventricular Pulse Width'], initial_value=parameters['Ventricular Pulse Width'], readonly=False,  size=sizeText2)],
         ]
         layoutAI = [
@@ -284,12 +313,12 @@ def getWindowByState():
         ]
         layoutDDDRextra = [
             [sg.Text('Atrial Sensitivity (mV)', size=(sizeText, 1)),
-             sg.Spin(values=parameterValues['Atrial Sensitivity'], initial_value=parameters['Atrial Sensitivity'], readonly=False,  size=sizeText2),
-             sg.Text('ARP (ms)', size=(sizeText, 1)), sg.Spin(
+             sg.Spin(values=parameterValues['Atrial Sensitivity'], initial_value=parameters['Atrial Sensitivity'], readonly=False,  size=sizeText2)],
+            [sg.Text('ARP (ms)', size=(sizeText, 1)), sg.Spin(
                 values=parameterValues['ARP'], initial_value=parameters['ARP'], readonly=False,  size=sizeText2)],
             [sg.Text('PVARP (ms)', size=(sizeText, 1)), sg.Spin(
-                values=parameterValues['PVARP'], initial_value=parameters['PVARP'], readonly=False,  size=sizeText2),
-             sg.Text('Ventricular Sensitivity (mV)', size=(sizeText, 1)),
+                values=parameterValues['PVARP'], initial_value=parameters['PVARP'], readonly=False,  size=sizeText2)],
+            [sg.Text('Ventricular Sensitivity (mV)', size=(sizeText, 1)),
              sg.Spin(values=parameterValues['Ventricular Sensitivity'], initial_value=parameters['Ventricular Sensitivity'], readonly=False,  size=sizeText2)],
             [sg.Text('VRP (ms)', size=(sizeText, 1)), sg.Spin(
                 values=parameterValues['VRP'], initial_value=parameters['VRP'], readonly=False,  size=sizeText2)],
@@ -297,15 +326,14 @@ def getWindowByState():
              sg.Spin(values=parameterValues['Hysteresis'], initial_value=parameters['Hysteresis'], readonly=False,  size=sizeText2)],
             [sg.Text('Rate Smoothing (%)', size=(sizeText, 1)),
              sg.Spin(values=parameterValues['Rate Smoothing'], initial_value=parameters['Rate Smoothing'], readonly=False,  size=sizeText2)],
-
-            [sg.Text('Fixed AV delay ()', size=(sizeText, 1)),sg.Spin(values=parameterValues['Fixed AV delay'], initial_value=parameters['Fixed AV delay'], readonly=False,  size=sizeText2), 
-             sg.Text('Dynamic AV delay', size=(sizeText, 1)),sg.Spin(values=parameterValues['Dynamic AV delay'], initial_value=parameters['Dynamic AV delay'], readonly=False,  size=sizeText2)],
-            [sg.Text('Minimum Dynamic AV delay', size=(sizeText, 1)),sg.Spin(values=parameterValues['Minimum Dynamic AV delay'], initial_value=parameters['Minimum Dynamic AV delay'], readonly=False,  size=sizeText2), 
-             sg.Text('Sensed AV delay offset', size=(sizeText, 1)),sg.Spin(values=parameterValues['Sensed AV delay offset'], initial_value=parameters['Sensed AV delay offset'], readonly=False,  size=sizeText2)],
-            [sg.Text('PVARP Extension', size=(sizeText, 1)),sg.Spin(values=parameterValues['PVARP Extension'], initial_value=parameters['PVARP Extension'], readonly=False,  size=sizeText2),
-             sg.Text('ATR Mode', size=(sizeText, 1)),sg.Spin(values=parameterValues['ATR Mode'], initial_value=parameters['ATR Mode'], readonly=False,  size=sizeText2)], 
-            [sg.Text('ATR Duration', size=(sizeText, 1)),sg.Spin(values=parameterValues['ATR Duration'], initial_value=parameters['ATR Duration'], readonly=False,  size=sizeText2),
-            sg.Text('ATR Fallback Time', size=(sizeText, 1)),sg.Spin(values=parameterValues['ATR Fallback Time'], initial_value=parameters['ATR Fallback Time'], readonly=False,  size=sizeText2)],
+            [sg.Text('Fixed AV delay ()', size=(sizeText, 1)),sg.Spin(values=parameterValues['Fixed AV delay'], initial_value=parameters['Fixed AV delay'], readonly=False,  size=sizeText2)], 
+            [sg.Text('Dynamic AV delay', size=(sizeText, 1)),sg.Spin(values=parameterValues['Dynamic AV delay'], initial_value=parameters['Dynamic AV delay'], readonly=False,  size=sizeText2)],
+            [sg.Text('Minimum Dynamic AV delay', size=(sizeText, 1)),sg.Spin(values=parameterValues['Minimum Dynamic AV delay'], initial_value=parameters['Minimum Dynamic AV delay'], readonly=False,  size=sizeText2)], 
+            [sg.Text('Sensed AV delay offset', size=(sizeText, 1)),sg.Spin(values=parameterValues['Sensed AV delay offset'], initial_value=parameters['Sensed AV delay offset'], readonly=False,  size=sizeText2)],
+            [sg.Text('PVARP Extension', size=(sizeText, 1)),sg.Spin(values=parameterValues['PVARP Extension'], initial_value=parameters['PVARP Extension'], readonly=False,  size=sizeText2)],
+            [sg.Text('ATR Mode', size=(sizeText, 1)),sg.Spin(values=parameterValues['ATR Mode'], initial_value=parameters['ATR Mode'], readonly=False,  size=sizeText2)], 
+            [sg.Text('ATR Duration', size=(sizeText, 1)),sg.Spin(values=parameterValues['ATR Duration'], initial_value=parameters['ATR Duration'], readonly=False,  size=sizeText2)],
+            [sg.Text('ATR Fallback Time', size=(sizeText, 1)),sg.Spin(values=parameterValues['ATR Fallback Time'], initial_value=parameters['ATR Fallback Time'], readonly=False,  size=sizeText2)],
             [sg.Text('Ventricular Blanking', size=(sizeText, 1)),sg.Spin(values=parameterValues['Ventricular Blanking'], initial_value=parameters['Ventricular Blanking'], readonly=False,  size=sizeText2)],
         ]
         layoutFooter = [[sg.Button('Submit Parameters')],
@@ -330,7 +358,18 @@ def getWindowByState():
         if("R" in curMode):
             layoutControl.append(layoutR)
         if("DDDR" in curMode):
-            layoutControl = [layoutHeader,layoutCommons, layoutA, layoutV, layoutR]
+
+            layoutControl = []
+            temp = [layoutHeader,layoutCommons, layoutA, layoutV, layoutR, layoutDDDRextra, layoutFooter]
+
+            for listLayout in temp:
+                for element in listLayout:
+                    layoutControl.append(element)
+            
+            layout = [
+                [sg.Column(layoutControl, scrollable=True,  vertical_scroll_only=True)]
+            ]
+            return sg.Window('PaceMaker', layout, resizable=True)
         layoutControl.append(layoutFooter)
         return sg.Window('PaceMaker', layoutControl, resizable=True)
     elif (state == "createUser"):
@@ -338,9 +377,8 @@ def getWindowByState():
         return window
     elif (state == "egram"):
         window = sg.Window('PaceMaker', layoutEgram,
-                           resizable=True, finalize=True, )
+                           resizable=True, finalize=True)
         return window
-
 
 # main function to run GUI
 if __name__ == '__main__':
@@ -348,29 +386,24 @@ if __name__ == '__main__':
         dataBaseFile = updateDataBaseFile()
         sg.theme('LightGrey1')
 
-        while True:
+        while True: 
             window = getWindowByState()
 
             if(state == "egram"):
-                fig = matplotlib.figure.Figure(
-                    figsize=(5, 4), dpi=100)
-                t = np.arange(0, 3, .01)
-                fig.add_subplot(111).plot(t, 2 * np.sin(2 * np.pi * t))
-                fig_agg = draw_figure(window['-CANVAS-'].TKCanvas, fig)
-                window.move(250, 250)  # need to update this
+                spectraPlot = updateable_matplotlib_plot(window['canvas'])
+                window.finalize()
+                spectraPlot.plot(np.zeros(1024)) 
 
             event, values = window.read()
-
             if event == sg.WIN_CLOSED or event == 'Cancel':
                 window.close()
                 break
             if (logging):
-                print(state)
-
+                print(state) 
             if (state == "login"):
                 getAllUsers()
                 if (event == "Login"):
-                    if (logging):
+                    if (True):
                         print(values)
                     if (users.get(getRealValue(values[0])) and users[getRealValue(values[0])].checkCredential(getRealValue(values[0]), getRealValue(values[1]))):
                         infoMessage = ""
@@ -407,12 +440,12 @@ if __name__ == '__main__':
                 elif (event == "Back to Login"):
                     state = "login"
             elif (state == "control"):
-                windowMode = values['mode']
-                if(windowMode in mode):
-                    curMode = windowMode
                 if (logging):
                     print(event)
                     print(values)
+                windowMode = values['mode']
+                if(windowMode in mode):
+                    curMode = windowMode
                 if (event == "Submit Parameters"):
                     newParameters = getUpdatedParameters(values)
                     check = parameterUtil.checkParameterInRange(newParameters)
@@ -433,6 +466,9 @@ if __name__ == '__main__':
                     state = "login"
                     infoMessage = "Successful log off"
             elif (state == "egram"):
+                if event == "update":
+                    some_spectrum = np.random.random(1024) # data to be plotted
+                    spectraPlot.plot(some_spectrum) #plot the data 
                 if (event == "Back to Parameters Screen"):
                     state = "control"
                     infoMessage = "Welcome to Control Panel for: " + curUser

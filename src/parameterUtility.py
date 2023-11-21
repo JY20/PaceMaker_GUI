@@ -54,11 +54,33 @@ class parameterUtility:
                     parameterLowerLimit[parameter], parameterUpperLimit[parameter]+parameterIncrements[parameter], parameterIncrements[parameter])]
                 self.parameterValues[parameter] = np.round(
                     self.parameterValues[parameter], 2)
-        self.parameterNominals = {'Lower Rate Limit': 60, 'Upper Rate Limit': 120, 'Maximum Sensor Rate': 120, 'Activity Threshold': 'Med', 'Reaction Time': 30, 'Response Factor': 8, 'Recovery Time': 5,
+        parameterNominals = {'Lower Rate Limit': 60, 'Upper Rate Limit': 120, 'Maximum Sensor Rate': 120, 'Activity Threshold': 'Med', 'Reaction Time': 30, 'Response Factor': 8, 'Recovery Time': 5,
                                   'Atrial Amplitude':  5, 'Atrial Pulse Width': 1, 'Ventricular Amplitude': 5, 'Ventricular Pulse Width': 1,
                                   'Atrial Sensitivity': 0, 'ARP': 250, 'PVARP': 250, 'Ventricular Sensitivity': 0, 'VRP': 250,
                                   'Hysteresis': 0, 'Rate Smoothing': 0, 'Fixed AV delay': 150, 'Dynamic AV delay':'Off','Minimum Dynamic AV delay':50, 
                                'Sensed AV delay offset':0, 'PVARP Extension':0, 'ATR Mode':'Off', 'ATR Duration':20,'ATR Fallback Time':1, 'Ventricular Blanking':40}
+        
+        self.parameterNominals = {}
+        for parameter in self.parameterNames:
+            if(str(type(self.parameterValues[parameter][0])) == str(np.int32) or str(type(self.parameterValues[parameter][0])) == str(int)):
+                self.parameterNominals[parameter] = int(parameterNominals[parameter])
+                temp =  []
+                for value in self.parameterValues[parameter]:
+                    temp.append(int(value))
+                self.parameterValues[parameter] = temp
+            elif(str(type(self.parameterValues[parameter][0])) == str(np.float64)):
+                self.parameterNominals[parameter] = float(parameterNominals[parameter])
+                temp =  []
+                for value in self.parameterValues[parameter]:
+                    temp.append(float(value))
+                self.parameterValues[parameter] = temp
+            elif(str(type(self.parameterValues[parameter][0])) == str(str)):
+                self.parameterNominals[parameter] = str(parameterNominals[parameter])
+                temp =  []
+                for value in self.parameterValues[parameter]:
+                    temp.append(str(value))
+                self.parameterValues[parameter] = temp
+
         for parameter in self.parameterValues:
             if (type(self.parameterValues[parameter]) == np.ndarray):
                 self.parameterValues[parameter] = self.parameterValues[parameter].tolist()
@@ -78,8 +100,13 @@ class parameterUtility:
     # checks if parameter value is in range
     def checkParameterInRange(self, newParameterValues):
         for parameter in newParameterValues:
+            if(str(type(self.parameterValues[parameter][0])) == str(int)):
+                newParameterValues[parameter] = int(newParameterValues[parameter])
+            elif(str(type(self.parameterValues[parameter][0])) == str(float)):
+                newParameterValues[parameter] = float(newParameterValues[parameter])
+            elif(str(type(self.parameterValues[parameter][0])) == str(str)):
+                newParameterValues[parameter] = str(newParameterValues[parameter])
+
             if(newParameterValues[parameter] not in self.parameterValues[parameter]):
-                print(newParameterValues)
-                print(self.parameterValues[parameter])
                 return parameter
         return None

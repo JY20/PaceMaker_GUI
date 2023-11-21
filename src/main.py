@@ -30,28 +30,46 @@ curUser = ""  # current user name
 parameterUtil = parameterUtility()  # utility class object for parameter functions
 mode = ["AOO", "AAI", "VOO", "VVI", "AOOR",
         "AAIR", "VOOR", "VVIR", "DDDR"]  # list of modes
-# dict for time and voltage list of egram data
-egramData = {"time": [], "voltage": []}
+# dict for atrial and ventricular list of egram data
+egramData = {"vent": [], "atr": []}
 tempCounter = 0
 
 
-def serialWrite():
-    ser=serial.Serial()
-    for ns in range(0, 101): 
-        try:
-            ser.port=str(ns)
-            ser.open()
-            print("COM"+str(ns+1)+" available")
-            ser.close()
+def serialCommunicate(recieve=False):
+    path = serial.Serial('COM13', 115200)
+    sendValue = struct.pack("s", mode)
+    
+    userParameters = users[curUser].getParameters()
 
-        except serial.SerialException:
-            print("COM"+str(ns+1)+" NOT available")
-    # parameters = users[curUser].getParameters()
-    # ser = serial.Serial('COM3', 115200)  # open serial port
-    # sendString = struct.pack(
-    #     'BB', parameters['Lower Rate Limit'], parameters['Upper Rate Limit'])
-    # ser.write(sendString)  # write a string
-    # ser.close()  # close port
+    for parameter in parameterUtil.parameterNames:
+        if(str(type(userParameters[parameter])) == str(int)):
+            sendValue += struct.pack("h", userParameters[parameter])
+        elif(str(type(userParameters[parameter])) == str(float)):
+            sendValue += struct.pack("f", userParameters[parameter])
+        elif(str(type(userParameters[parameter])) == str(str)):
+            sendValue += struct.pack("7s", userParameters[parameter])
+
+    path.write(b'\x16') # SYNC
+    if(recieve):
+        path.write(b'\x55') # FN_CODE
+    else:
+        path.write(b'\x56')
+    path.write(sendValue)
+
+    if(recieve):
+        while True:
+            data = path.readline()
+
+            if len(data) == 2:
+                print(data)
+
+                vent_data = struct.unpack('d',data[0:8])[0]
+                atr_data = struct.unpack('d',data[8:16])[0]
+
+                print(f"v: {vent_data}\t\ta: {atr_data}")
+                print(type(vent_data))
+                updateEgramData(atr_data, vent_data)
+
 
 # remove the spaces and get the real value
 
@@ -59,18 +77,18 @@ def serialWrite():
 def getRealValue(value):
     return value.replace(" ", "").replace("\n", "")
 
-def getEgramData():
-    print("into function")
-    f = open("sampleData.csv", "r")
-    value = f.read()
-    points = value.split("\n")
-    for point in points:
-        data = point.split(",")
-        egramData['time'].append(data[2])
-        egramData['voltage'].append(data[0])
-        # print(data)
-    # print(value)
-    f.close()
+def updateEgramData(newAtr, newVent):
+    newAtr = egramData['atr'][1:]
+    newAtr.append(newAtr)
+    egramData['atr'] = newAtr
+    newVent = egramData['vent'][1:]
+    newVent.append(newVent)
+    egramData['vent'] = newVent
+
+def defaultEgramData():
+    for i in range(0, 50):
+        egramData['vent'].append(0)
+        egramData['atr'].append(0)
 
 def checkValid(value):
     if (value == ""):
@@ -378,6 +396,7 @@ if __name__ == '__main__':
         dataBaseFile = updateDataBaseFile()
         sg.theme('LightGrey1')
         window = getWindowByState()
+        defaultEgramData()
 
         while True: 
             event, values = window.read()
@@ -440,6 +459,8 @@ if __name__ == '__main__':
                 windowMode = values['mode']
                 if(windowMode in mode):
                     curMode = windowMode
+                    window.close()
+                    window = getWindowByState()
                 if (event == "Submit Parameters"):
                     newParameters = getUpdatedParameters(values)
                     check = parameterUtil.checkParameterInRange(newParameters)
@@ -449,7 +470,7 @@ if __name__ == '__main__':
                         infoMessage = "Parameters Successfully Updated!"
                         updateDatabase()
                         getAllUsers()
-                        serialWrite()
+                        serialCommunicate()
                     else:
                         infoMessage = "Double check the value entered are in range for parameter: " + \
                             str(check)
@@ -470,6 +491,7 @@ if __name__ == '__main__':
                     window = getWindowByState()
             elif (state == "egram"):
                 if event == "update":
+                    serialCommunicate(True)
                     some_spectrum = np.random.random(1024) # data to be plotted
                     spectraPlot.plot(some_spectrum) #plot the data 
                 if (event == "Back to Parameters Screen"):

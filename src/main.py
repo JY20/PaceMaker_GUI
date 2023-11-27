@@ -18,7 +18,6 @@ import serial
 import struct
 matplotlib.use('TkAgg')
 
-
 maxUsers = 10  # max users
 
 users = {}  # user dict
@@ -220,13 +219,6 @@ def getUpdatedParameters(values):
     return updated_parameters
 
 
-def draw_figure(canvas, figure):
-    figure_canvas_agg = FigureCanvasTkAgg(figure, canvas)
-    figure_canvas_agg.draw()
-    figure_canvas_agg.get_tk_widget().pack(side='top', fill='both', expand=1)
-    return figure_canvas_agg
-
-
 # get the window layout by state
 
 
@@ -260,8 +252,7 @@ def getWindowByState():
         [sg.Button('Create New User')], [sg.Button('Back to Login')]]
 
     layoutEgram = [
-        [sg.Canvas(size=(500,200), key='canvasAtr')],
-        [sg.Canvas(size=(500,200), key='canvasVent')],
+        [sg.Canvas(key='canvasAtr'), sg.Canvas( key='canvasVent')],
         [sg.Button('Back to Parameters Screen'),sg.Button('Update', key='update')]
     ]
 
@@ -394,18 +385,8 @@ def getWindowByState():
     elif (state == "createUser"):
         return sg.Window('PaceMaker', layoutCreateUser, resizable=True)
     elif (state == "egram"):
-        # layoutControl = []
-        # temp = [layoutEgram]
-
-        # for listLayout in temp:
-        #     for element in listLayout:
-        #         layoutControl.append(element)
-
-        # layout = [
-        #     [sg.Column(layoutControl, scrollable=True,  vertical_scroll_only=True)]
-        # ]
         return sg.Window('PaceMaker', layoutEgram,
-                           resizable=True, finalize=True)
+                           resizable=True, finalize=True, location=(115, 125), element_justification='center')
 
 # main function to run GUI
 if __name__ == '__main__':
@@ -417,7 +398,7 @@ if __name__ == '__main__':
         counter = 0
 
         while True: 
-            event, values = window.read(timeout=100)
+            event, values = window.read(timeout=350)
             # print(counter)
             counter += 1
             if event == sg.WIN_CLOSED or event == 'Cancel':

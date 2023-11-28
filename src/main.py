@@ -4,9 +4,11 @@ from egramPlot import updateable_matplotlib_plot
 import matplotlib.pyplot as plt
 import PySimpleGUI as sg
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
 import matplotlib
 import time
 import threading
+import random
 import numpy as np
 import json
 import hashlib
@@ -15,7 +17,6 @@ import matplotlib
 import serial
 import struct
 matplotlib.use('TkAgg')
-
 
 maxUsers = 10  # max users
 
@@ -77,13 +78,18 @@ def serialCommunicate(recieve=False):
 def getRealValue(value):
     return value.replace(" ", "").replace("\n", "")
 
-def updateEgramData(newAtr, newVent):
+def updateEgramData(newAtrData, newVentData):
     newAtr = egramData['atr'][1:]
-    newAtr.append(newAtr)
+    newAtr.append(newAtrData)
     egramData['atr'] = newAtr
     newVent = egramData['vent'][1:]
-    newVent.append(newVent)
+    newVent.append(newVentData)
     egramData['vent'] = newVent
+
+def tempData():
+    # time.sleep(1)
+    # print(time.time())
+    updateEgramData(random.randint(0, 100)/100, random.randint(0, 100)/100)
 
 def defaultEgramData():
     for i in range(0, 50):
@@ -213,13 +219,6 @@ def getUpdatedParameters(values):
     return updated_parameters
 
 
-def draw_figure(canvas, figure):
-    figure_canvas_agg = FigureCanvasTkAgg(figure, canvas)
-    figure_canvas_agg.draw()
-    figure_canvas_agg.get_tk_widget().pack(side='top', fill='both', expand=1)
-    return figure_canvas_agg
-
-
 # get the window layout by state
 
 
@@ -253,7 +252,7 @@ def getWindowByState():
         [sg.Button('Create New User')], [sg.Button('Back to Login')]]
 
     layoutEgram = [
-        [sg.Canvas(size=(500,500), key='canvas')],
+        [sg.Canvas(key='canvasAtr'), sg.Canvas( key='canvasVent')],
         [sg.Button('Back to Parameters Screen'),sg.Button('Update', key='update')]
     ]
 
@@ -370,7 +369,6 @@ def getWindowByState():
         if("R" in curMode):
             layoutControl.append(layoutR)
         if("DDDR" in curMode):
-
             layoutControl = []
             temp = [layoutHeader,layoutCommons, layoutA, layoutV, layoutR, layoutDDDRextra, layoutFooter]
 
@@ -388,7 +386,7 @@ def getWindowByState():
         return sg.Window('PaceMaker', layoutCreateUser, resizable=True)
     elif (state == "egram"):
         return sg.Window('PaceMaker', layoutEgram,
-                           resizable=True, finalize=True)
+                           resizable=True, finalize=True, location=(115, 125), element_justification='center')
 
 # main function to run GUI
 if __name__ == '__main__':
@@ -397,10 +395,12 @@ if __name__ == '__main__':
         sg.theme('LightGrey1')
         window = getWindowByState()
         defaultEgramData()
+        counter = 0
 
         while True: 
-            event, values = window.read()
-
+            event, values = window.read(timeout=350)
+            # print(counter)
+            counter += 1
             if event == sg.WIN_CLOSED or event == 'Cancel':
                 window.close()
                 break
@@ -470,7 +470,7 @@ if __name__ == '__main__':
                         infoMessage = "Parameters Successfully Updated!"
                         updateDatabase()
                         getAllUsers()
-                        serialCommunicate()
+                        # serialCommunicate()
                     else:
                         infoMessage = "Double check the value entered are in range for parameter: " + \
                             str(check)
@@ -480,20 +480,25 @@ if __name__ == '__main__':
                     state = "egram"
                     infoMessage = ""
                     window.close()
+                    # serialCommunicate(True)
                     window = getWindowByState()
-                    spectraPlot = updateable_matplotlib_plot(window['canvas'])
+                    spectraPlot1 = updateable_matplotlib_plot(window['canvasAtr'], "Egram Data Atr")
+                    spectraPlot2 = updateable_matplotlib_plot(window['canvasVent'], "Egram Data Vent")
                     window.finalize()
-                    spectraPlot.plot(np.zeros(1024)) 
+                    spectraPlot1.plot(egramData['atr']) 
+                    spectraPlot2.plot(egramData['vent']) 
                 if (event == "Log Off"):
                     state = "login"
                     infoMessage = "Successful log off"
                     window.close()
                     window = getWindowByState()
             elif (state == "egram"):
+                tempData()
+                spectraPlot1.plot(egramData['atr']) 
+                spectraPlot2.plot(egramData['vent']) 
                 if event == "update":
-                    serialCommunicate(True)
-                    some_spectrum = np.random.random(1024) # data to be plotted
-                    spectraPlot.plot(some_spectrum) #plot the data 
+                    spectraPlot1.plot(egramData['atr']) 
+                    spectraPlot2.plot(egramData['vent']) 
                 if (event == "Back to Parameters Screen"):
                     state = "control"
                     infoMessage = "Welcome to Control Panel for: " + curUser

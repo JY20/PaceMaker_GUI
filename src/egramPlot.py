@@ -4,10 +4,11 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 
 class updateable_matplotlib_plot():
-    def __init__(self, canvas) -> None:
+    def __init__(self, canvas, title) -> None:
         self.fig_agg = None
         self.figure = None
         self.canvas = canvas
+        self.title = title
 
     def plot(self, data):
         self.data = data
@@ -18,11 +19,11 @@ class updateable_matplotlib_plot():
     def figure_controller(self):
         #first run....
         if self.figure is None:
-            self.figure = plt.figure()
+            self.figure = plt.figure(figsize=(5, 3))
             self.axes = self.figure.add_subplot(111)
             self.line, = self.axes.plot(self.data)
-            self.axes.set_title("Egram Data")
-        #all other runs
+            self.axes.set_title(self.title)
+        # #all other runs
         else:            
             self.line.set_ydata(self.data)#update data            
             self.axes.relim() #scale the y scale

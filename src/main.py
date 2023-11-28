@@ -34,6 +34,7 @@ mode = ["AOO", "AAI", "VOO", "VVI", "AOOR",
 # dict for atrial and ventricular list of egram data
 egramData = {"vent": [], "atr": []}
 tempCounter = 0
+path = ""
 
 
 def serialCommunicate(recieve=False):
@@ -58,20 +59,22 @@ def serialCommunicate(recieve=False):
     path.write(sendValue)
 
     if(recieve):
-        while True:
-            data = path.readline()
-
-            if len(data) == 2:
-                print(data)
-
-                vent_data = struct.unpack('d',data[0:8])[0]
-                atr_data = struct.unpack('d',data[8:16])[0]
-
-                print(f"v: {vent_data}\t\ta: {atr_data}")
-                print(type(vent_data))
-                updateEgramData(atr_data, vent_data)
+        return path
 
 
+
+def readEgramData(path):
+    data = path.readline()
+    if len(data) == 2:
+        print(data)
+
+        vent_data = struct.unpack('d',data[0:8])[0]
+        atr_data = struct.unpack('d',data[8:16])[0]
+
+        print(f"v: {vent_data}\t\ta: {atr_data}")
+        print(type(vent_data))
+        updateEgramData(atr_data, vent_data)
+        
 # remove the spaces and get the real value
 
 
@@ -87,8 +90,6 @@ def updateEgramData(newAtrData, newVentData):
     egramData['vent'] = newVent
 
 def tempData():
-    # time.sleep(1)
-    # print(time.time())
     updateEgramData(random.randint(0, 100)/100, random.randint(0, 100)/100)
 
 def defaultEgramData():
@@ -398,7 +399,7 @@ if __name__ == '__main__':
         counter = 0
 
         while True: 
-            event, values = window.read(timeout=350)
+            event, values = window.read(timeout=100)
             # print(counter)
             counter += 1
             if event == sg.WIN_CLOSED or event == 'Cancel':
@@ -470,7 +471,7 @@ if __name__ == '__main__':
                         infoMessage = "Parameters Successfully Updated!"
                         updateDatabase()
                         getAllUsers()
-                        # serialCommunicate()
+                        serialCommunicate()
                     else:
                         infoMessage = "Double check the value entered are in range for parameter: " + \
                             str(check)
@@ -480,7 +481,7 @@ if __name__ == '__main__':
                     state = "egram"
                     infoMessage = ""
                     window.close()
-                    # serialCommunicate(True)
+                    path = serialCommunicate(True)
                     window = getWindowByState()
                     spectraPlot1 = updateable_matplotlib_plot(window['canvasAtr'], "Egram Data Atr")
                     spectraPlot2 = updateable_matplotlib_plot(window['canvasVent'], "Egram Data Vent")
@@ -493,7 +494,8 @@ if __name__ == '__main__':
                     window.close()
                     window = getWindowByState()
             elif (state == "egram"):
-                tempData()
+                # tempData()
+                readEgramData(path)
                 spectraPlot1.plot(egramData['atr']) 
                 spectraPlot2.plot(egramData['vent']) 
                 if event == "update":

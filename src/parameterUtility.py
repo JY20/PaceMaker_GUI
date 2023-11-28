@@ -100,11 +100,11 @@ class parameterUtility:
     # checks if parameter value is in range
     def checkParameterInRange(self, newParameterValues):
         for parameter in newParameterValues:
-            if(str(type(self.parameterValues[parameter][0])) == str(int)):
+            if(str(type(newParameterValues[parameter])) == str(int)):
                 newParameterValues[parameter] = int(newParameterValues[parameter])
-            elif(str(type(self.parameterValues[parameter][0])) == str(float)):
+            elif(str(type(newParameterValues[parameter])) == str(float)):
                 newParameterValues[parameter] = float(newParameterValues[parameter])
-            elif(str(type(self.parameterValues[parameter][0])) == str(str)):
+            elif(str(type(newParameterValues[parameter])) == str(str)):
                 newParameterValues[parameter] = str(newParameterValues[parameter])
 
             if(newParameterValues[parameter] not in self.parameterValues[parameter]):

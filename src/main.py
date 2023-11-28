@@ -38,8 +38,8 @@ path = ""
 
 
 def serialCommunicate(recieve=False):
-    path = serial.Serial('COM13', 115200)
-    sendValue = struct.pack("s", mode)
+    path = serial.Serial('COM9', 115200)
+    sendValue = struct.pack("7s", curMode.encode())
     
     userParameters = users[curUser].getParameters()
 
@@ -49,7 +49,7 @@ def serialCommunicate(recieve=False):
         elif(str(type(userParameters[parameter])) == str(float)):
             sendValue += struct.pack("f", userParameters[parameter])
         elif(str(type(userParameters[parameter])) == str(str)):
-            sendValue += struct.pack("7s", userParameters[parameter])
+            sendValue += struct.pack("7s", userParameters[parameter].encode())
 
     path.write(b'\x16') # SYNC
     if(recieve):

@@ -4,6 +4,7 @@ from egramPlot import updateable_matplotlib_plot
 import matplotlib.pyplot as plt
 import PySimpleGUI as sg
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from random import randint
 
 import matplotlib
 import time
@@ -40,11 +41,11 @@ mode = ["AOO", "AAI", "VOO", "VVI", "AOOR",
 # dict for atrial and ventricular list of egram data
 egramData = {"vent": [], "atr": []}
 tempCounter = 0
-path = ""
+path = serial.Serial('COM3', 115200, timeout=0.1)
+# path = ""
 
 
 def serialCommunicate(recieve=False):
-    path = serial.Serial('COM3', 115200, timeout=0.1)
     sendValue = struct.pack("7s", curMode.encode())
     
     userParameters = users[curUser].getParameters()
@@ -64,22 +65,16 @@ def serialCommunicate(recieve=False):
         path.write(b'\x56')
     path.write(sendValue)
 
-    if(recieve):
-        return path
 
 
-
-def readEgramData(path):
+def readEgramData():
     for i in range(0, 5):
         data = path.readline()
     data = path.readline()
     if len(data) == 17:
-            # logger.info(str(data))
-
         vent_data = struct.unpack('d',data[0:8])[0]
         atr_data = struct.unpack('d',data[8:16])[0]
         logger.info(f"v: {vent_data}\t\ta: {atr_data}")
-        # print(type(vent_data))
         updateEgramData(atr_data, vent_data)
         
 # remove the spaces and get the real value
@@ -95,9 +90,6 @@ def updateEgramData(newAtrData, newVentData):
     newVent = egramData['vent'][1:]
     newVent.append(newVentData)
     egramData['vent'] = newVent
-
-def tempData():
-    updateEgramData(random.randint(0, 100)/100, random.randint(0, 100)/100)
 
 def defaultEgramData():
     for i in range(0, 50):
@@ -175,6 +167,9 @@ def updateDatabase():
     f.write(json.dumps(getAllUsersCurrentJson(), indent=3))
     f.close()
 
+
+def tempData():
+    updateEgramData(random.randint(0, 100)/100, random.randint(0, 100)/100)
 
 # convert event values to parameters dicts
 def getUpdatedParameters(values):
@@ -261,7 +256,7 @@ def getWindowByState():
 
     layoutEgram = [
         [sg.Canvas(key='canvasAtr'), sg.Canvas( key='canvasVent')],
-        [sg.Button('Back to Parameters Screen'),sg.Button('Update', key='update')]
+        [sg.Button('Back to Parameters Screen')]
     ]
 
     sizeText = 30
@@ -398,7 +393,7 @@ def getWindowByState():
 
 # main function to run GUI
 if __name__ == '__main__':
-    # try:
+    try:
         dataBaseFile = updateDataBaseFile()
         sg.theme('LightGrey1')
         window = getWindowByState()
@@ -407,7 +402,6 @@ if __name__ == '__main__':
 
         while True: 
             event, values = window.read(timeout=30)
-            # print(counter)
             counter += 1
             if event == sg.WIN_CLOSED or event == 'Cancel':
                 window.close()
@@ -472,7 +466,9 @@ if __name__ == '__main__':
                 if (event == "Submit Parameters"):
                     newParameters = getUpdatedParameters(values)
                     check = parameterUtil.checkParameterInRange(newParameters)
-                    if(check == None):
+                    if(curMode == "none"):
+                        infoMessage = "Please select a mode, mode can not be none" 
+                    elif(check == None):
                         users[curUser].updateParameters(newParameters)
                         users[curUser].setMode(curMode)
                         infoMessage = "Parameters Successfully Updated!"
@@ -488,7 +484,7 @@ if __name__ == '__main__':
                     state = "egram"
                     infoMessage = ""
                     window.close()
-                    path = serialCommunicate(True)
+                    serialCommunicate(True)
                     window = getWindowByState()
                     spectraPlot1 = updateable_matplotlib_plot(window['canvasAtr'], "Egram Data Atr")
                     spectraPlot2 = updateable_matplotlib_plot(window['canvasVent'], "Egram Data Vent")
@@ -501,20 +497,17 @@ if __name__ == '__main__':
                     window.close()
                     window = getWindowByState()
             elif (state == "egram"):
+                readEgramData()
                 # tempData()
-                readEgramData(path)
                 spectraPlot1.plot(egramData['atr']) 
                 spectraPlot2.plot(egramData['vent']) 
-                if event == "update":
-                    spectraPlot1.plot(egramData['atr']) 
-                    spectraPlot2.plot(egramData['vent']) 
                 if (event == "Back to Parameters Screen"):
                     state = "control"
                     infoMessage = "Welcome to Control Panel for: " + curUser
                     window.close()
                     window = getWindowByState()
         window.close()
-    # except Exception as e:
-    #     window.close()
-    #     sg.popup_error_with_traceback(
-    #         "An error had occured. Please contact the support team with the following info: ", e)
+    except Exception as e:
+        window.close()
+        sg.popup_error_with_traceback(
+            "An error had occured. Please contact the support team with the following info: ", e)

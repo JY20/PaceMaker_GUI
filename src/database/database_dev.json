@@ -304,5 +304,39 @@
          "ATR Fallback Time": 1,
          "Ventricular Blanking": 40
       }
+   },
+   "sd": {
+      "name": "sd",
+      "password": "688787d8ff144c502c7f5cffaafe2cc588d86079f9de88304c26b0cb99ce91c6",
+      "mode": "none",
+      "parameters": {
+         "Lower Rate Limit": 60,
+         "Upper Rate Limit": 120,
+         "Maximum Sensor Rate": 120,
+         "Activity Threshold": "Med",
+         "Reaction Time": 30,
+         "Response Factor": 8,
+         "Recovery Time": 5,
+         "Atrial Amplitude": 5.0,
+         "Atrial Pulse Width": 1,
+         "Ventricular Amplitude": 5.0,
+         "Ventricular Pulse Width": 1,
+         "Atrial Sensitivity": 0.0,
+         "ARP": 250,
+         "PVARP": 250,
+         "Ventricular Sensitivity": 0.0,
+         "VRP": 250,
+         "Hysteresis": 0,
+         "Rate Smoothing": 0,
+         "Fixed AV delay": 150,
+         "Dynamic AV delay": "Off",
+         "Minimum Dynamic AV delay": 50,
+         "Sensed AV delay offset": 0,
+         "PVARP Extension": 0,
+         "ATR Mode": "Off",
+         "ATR Duration": 20,
+         "ATR Fallback Time": 1,
+         "Ventricular Blanking": 40
+      }
    }
 }

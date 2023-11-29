@@ -17,6 +17,12 @@ import matplotlib
 import serial
 import struct
 matplotlib.use('TkAgg')
+from datetime import datetime
+import logging
+
+date = datetime.now().strftime("%Y%m%d")
+logging.basicConfig(filename=str(date)+".log", level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger("sdasd")
 
 maxUsers = 10  # max users
 
@@ -38,7 +44,7 @@ path = ""
 
 
 def serialCommunicate(recieve=False):
-    path = serial.Serial('COM22', 115200)
+    path = serial.Serial('COM3', 115200, timeout=0.1)
     sendValue = struct.pack("7s", curMode.encode())
     
     userParameters = users[curUser].getParameters()
@@ -64,15 +70,16 @@ def serialCommunicate(recieve=False):
 
 
 def readEgramData(path):
+    for i in range(0, 5):
+        data = path.readline()
     data = path.readline()
     if len(data) == 17:
-        print(data)
+            # logger.info(str(data))
 
         vent_data = struct.unpack('d',data[0:8])[0]
         atr_data = struct.unpack('d',data[8:16])[0]
-
-        print(f"v: {vent_data}\t\ta: {atr_data}")
-        print(type(vent_data))
+        logger.info(f"v: {vent_data}\t\ta: {atr_data}")
+        # print(type(vent_data))
         updateEgramData(atr_data, vent_data)
         
 # remove the spaces and get the real value
@@ -399,7 +406,7 @@ if __name__ == '__main__':
         counter = 0
 
         while True: 
-            event, values = window.read(timeout=100)
+            event, values = window.read(timeout=30)
             # print(counter)
             counter += 1
             if event == sg.WIN_CLOSED or event == 'Cancel':

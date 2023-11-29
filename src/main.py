@@ -38,7 +38,7 @@ path = ""
 
 
 def serialCommunicate(recieve=False):
-    path = serial.Serial('COM9', 115200)
+    path = serial.Serial('COM22', 115200)
     sendValue = struct.pack("7s", curMode.encode())
     
     userParameters = users[curUser].getParameters()
@@ -65,7 +65,7 @@ def serialCommunicate(recieve=False):
 
 def readEgramData(path):
     data = path.readline()
-    if len(data) == 2:
+    if len(data) == 17:
         print(data)
 
         vent_data = struct.unpack('d',data[0:8])[0]

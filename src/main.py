@@ -341,7 +341,7 @@ def getWindowByState():
              sg.Spin(values=parameterValues['Hysteresis'], initial_value=parameters['Hysteresis'], readonly=False,  size=sizeText2)],
             [sg.Text('Rate Smoothing (%)', size=(sizeText, 1)),
              sg.Spin(values=parameterValues['Rate Smoothing'], initial_value=parameters['Rate Smoothing'], readonly=False,  size=sizeText2)],
-            [sg.Text('Fixed AV delay ()', size=(sizeText, 1)),sg.Spin(values=parameterValues['Fixed AV delay'], initial_value=parameters['Fixed AV delay'], readonly=False,  size=sizeText2)], 
+            [sg.Text('Fixed AV delay (ms)', size=(sizeText, 1)),sg.Spin(values=parameterValues['Fixed AV delay'], initial_value=parameters['Fixed AV delay'], readonly=False,  size=sizeText2)], 
             [sg.Text('Dynamic AV delay', size=(sizeText, 1)),sg.Spin(values=parameterValues['Dynamic AV delay'], initial_value=parameters['Dynamic AV delay'], readonly=False,  size=sizeText2)],
             [sg.Text('Minimum Dynamic AV delay', size=(sizeText, 1)),sg.Spin(values=parameterValues['Minimum Dynamic AV delay'], initial_value=parameters['Minimum Dynamic AV delay'], readonly=False,  size=sizeText2)], 
             [sg.Text('Sensed AV delay offset', size=(sizeText, 1)),sg.Spin(values=parameterValues['Sensed AV delay offset'], initial_value=parameters['Sensed AV delay offset'], readonly=False,  size=sizeText2)],

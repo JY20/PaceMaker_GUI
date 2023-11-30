@@ -25,10 +25,9 @@ class updateable_matplotlib_plot():
             self.axes.set_title(self.title)
         # #all other runs
         else:            
-            self.line.set_ydata(self.data)#update data            
-            self.axes.relim() #scale the y scale
+            self.line.set_ydata(self.data)      
+            self.axes.relim()
             self.axes.set_ylim(0.5,1)
-            # self.axes.autoscale_view() #scale the y scale
 
     #finally draw the figure on a canvas
     def figure_drawer(self):

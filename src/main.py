@@ -46,23 +46,23 @@ path = serial.Serial('COM3', 115200, timeout=0.1)
 
 
 def serialCommunicate(recieve=False):
-    sendValue = struct.pack("7s", curMode.encode())
+    sendValue=struct.pack("B", (mode.index(curMode)+1))
     
-    userParameters = users[curUser].getParameters()
+    # userParameters = users[curUser].getParameters()
 
-    for parameter in parameterUtil.parameterNames:
-        if(str(type(userParameters[parameter])) == str(int)):
-            sendValue += struct.pack("h", userParameters[parameter])
-        elif(str(type(userParameters[parameter])) == str(float)):
-            sendValue += struct.pack("f", userParameters[parameter])
-        elif(str(type(userParameters[parameter])) == str(str)):
-            sendValue += struct.pack("7s", userParameters[parameter].encode())
+    # for parameter in parameterUtil.parameterNames:
+    #     if(str(type(userParameters[parameter])) == str(int)):
+    #         sendValue += struct.pack("h", userParameters[parameter])
+    #     elif(str(type(userParameters[parameter])) == str(float)):
+    #         sendValue += struct.pack("f", userParameters[parameter])
+    #     elif(str(type(userParameters[parameter])) == str(str)):
+    #         sendValue += struct.pack("7s", userParameters[parameter].encode())
 
-    path.write(b'\x16') # SYNC
-    if(recieve):
-        path.write(b'\x55') # FN_CODE
-    else:
-        path.write(b'\x56')
+    # path.write(b'\x16') # SYNC
+    # if(recieve):
+    #     path.write(b'\x55') # FN_CODE
+    # else:
+    #     path.write(b'\x56')
     path.write(sendValue)
 
 

@@ -15,21 +15,17 @@ class updateable_matplotlib_plot():
         self.figure_controller()
         self.figure_drawer()
 
-    #put all of your normal matplotlib stuff in here
     def figure_controller(self):
-        #first run....
         if self.figure is None:
             self.figure = plt.figure(figsize=(5, 3))
             self.axes = self.figure.add_subplot(111)
             self.line, = self.axes.plot(self.data)
             self.axes.set_title(self.title)
-        # #all other runs
         else:            
             self.line.set_ydata(self.data)      
             self.axes.relim()
             self.axes.set_ylim(0.5,1)
 
-    #finally draw the figure on a canvas
     def figure_drawer(self):
         if self.fig_agg is not None: self.fig_agg.get_tk_widget().forget()
         self.fig_agg = FigureCanvasTkAgg(self.figure, self.canvas.TKCanvas)

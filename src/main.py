@@ -46,7 +46,7 @@ path = serial.Serial('COM3', 115200, timeout=0.1)
 
 
 def serialCommunicate(recieve=False):
-    sendValue = struct.pack("7s", curMode.encode())
+    sendValue = struct.pack("B", (mode.index(curMode)+1))
     
     userParameters = users[curUser].getParameters()
 

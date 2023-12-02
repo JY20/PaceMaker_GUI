@@ -21,8 +21,6 @@ matplotlib.use('TkAgg')
 from datetime import datetime
 import logging
 
-
-#creating a logger to log the egram data to time
 date = datetime.now().strftime("%Y%m%d")
 logging.basicConfig(filename=str(date)+".log", level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger("sdasd")
@@ -35,17 +33,18 @@ state = "login"  # state of GUI
 curMode = ""  # mode for the user
 windowMode = "none"  # mode from events of the winodw GUI
 infoMessage = ""  # info message for users
-dataBaseFile = "./database/database.json"  # name and path to database
+dataBaseFile = "./database/database_dev.json"  # name and path to database
 curUser = ""  # current user name
 parameterUtil = parameterUtility()  # utility class object for parameter functions
 mode = ["AOO", "AAI", "VOO", "VVI", "AOOR",
         "AAIR", "VOOR", "VVIR", "DDDR"]  # list of modes
-egramData = {"vent": [], "atr": []} # dict for atrial and ventricular list of egram data
-path = serial.Serial('COM3', 115200, timeout=0.1) #path for the pyserial 
+# dict for atrial and ventricular list of egram data
+egramData = {"vent": [], "atr": []}
+tempCounter = 0
+path = serial.Serial('COM3', 115200, timeout=0.1)
 # path = ""
 
 
-#send and recieve data with the pacemaker by serial communication
 def serialCommunicate(recieve=False):
     sendValue = struct.pack("B", (mode.index(curMode)+1))
     userParameters = users[curUser].getParameters()
@@ -62,7 +61,7 @@ def serialCommunicate(recieve=False):
     path.write(sendValue)
 
 
-#read the data from pacemaker data for the egram
+
 def readEgramData():
     for i in range(0, 5):
         data = path.readline()
@@ -74,10 +73,11 @@ def readEgramData():
         updateEgramData(atr_data, vent_data)
         
 # remove the spaces and get the real value
+
+
 def getRealValue(value):
     return value.replace(" ", "").replace("\n", "")
 
-#updates the egram data for the plots to include new data and points
 def updateEgramData(newAtrData, newVentData):
     newAtr = egramData['atr'][1:]
     newAtr.append(newAtrData)
@@ -86,13 +86,11 @@ def updateEgramData(newAtrData, newVentData):
     newVent.append(newVentData)
     egramData['vent'] = newVent
 
-#set the default of the egram to 0
 def defaultEgramData():
     for i in range(0, 50):
         egramData['vent'].append(0)
         egramData['atr'].append(0)
 
-#checks the value from creating name and password to not be empty or spaces
 def checkValid(value):
     if (value == ""):
         return "Invalid name/password"
@@ -101,6 +99,8 @@ def checkValid(value):
     return None
 
 # create the user in database
+
+
 def createUserDB(name, password):
     if(logging):
         print(str(len(users)+1)+"/"+str(maxUsers))
@@ -125,6 +125,8 @@ def createUserDB(name, password):
         return False
 
 # update the database file path when run from pacemaker_gui instead
+
+
 def updateDataBaseFile():
     if("src" not in os.getcwd()):
         newdataBaseFile = "./src/"+dataBaseFile.split("./")[1]
@@ -132,6 +134,8 @@ def updateDataBaseFile():
     return dataBaseFile
 
 # get all the json values of current users
+
+
 def getAllUsersCurrentJson():
     value = {}
     for user in users:
@@ -140,6 +144,8 @@ def getAllUsersCurrentJson():
 
 
 # get all users in database
+
+
 def getAllUsers():
     f = open(dataBaseFile, "r")
     data = json.load(f)
@@ -149,12 +155,14 @@ def getAllUsers():
     f.close()
 
 # update the database with all the users information
+
+
 def updateDatabase():
     f = open(dataBaseFile, "w")
     f.write(json.dumps(getAllUsersCurrentJson(), indent=3))
     f.close()
 
-#temp data for egram plots
+
 def tempData():
     updateEgramData(random.randint(0, 100)/100, random.randint(0, 100)/100)
 
@@ -210,6 +218,8 @@ def getUpdatedParameters(values):
 
 
 # get the window layout by state
+
+
 def getWindowByState():
     connection = [('\u2B24' + ' Disconnect', 'red'),
                   ('\u2B24' + ' Connect', 'green')]
